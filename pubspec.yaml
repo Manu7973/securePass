@@ -1,0 +1,55 @@
+name: SecurePass
+description: "This app is to safely keep your passwords in your device storage without any internet interactions keeping passwords safe within your device."
+
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # State management
+  flutter_bloc: ^9.1.1
+  equatable: ^2.0.7
+
+  # Storage
+  flutter_secure_storage: ^9.0.0
+  shared_preferences: ^2.2.3
+  hive_ce_flutter: ^2.3.3
+
+  #lottie
+  lottie: ^2.4.0
+
+  #toast
+  fluttertoast: ^8.2.4
+
+  #faceID
+  local_auth: ^2.2.0
+
+  #Storage
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.13.1
+  hive_ce_generator: ^1.6.0
+  build_runner: ^2.4.8
+
+# ✅ ICON CONFIG
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/images/app_icon.png
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/animations/secure_vault.json
