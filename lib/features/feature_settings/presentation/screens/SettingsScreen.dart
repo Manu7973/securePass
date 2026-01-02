@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:SecurePass/core/widgits/AppInfoTile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,12 +6,7 @@ import '../../../../core/routes/appRoutes.dart';
 import '../bloc/settings_bloc.dart';
 import '../bloc/settings_event.dart';
 import '../bloc/settings_state.dart';
-
-import 'dart:io';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -80,6 +74,17 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ],
                   ),
+
+                  const SizedBox(height: 16),
+                  _appTourCard(
+                    children: [
+                      _settingsTile(
+                        title: 'App Tour',
+                        onTap: () => _appTourCardDialog(context),
+                      ),
+                    ],
+                  ),
+
                   const SizedBox(height: 16),
                   _settingsCard(
                     children: [
@@ -119,6 +124,23 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _settingsCard({required List<Widget> children}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(children: children),
+    );
+  }
+
+  Widget _appTourCard({required List<Widget> children}) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -240,6 +262,10 @@ class SettingsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _appTourCardDialog(BuildContext context) {
+
   }
 
   void _showChangePasscodeDialog(BuildContext parentContext) {

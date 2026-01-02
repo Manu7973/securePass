@@ -1,19 +1,12 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-
 import '../../domain/SavePasscodeUseCase.dart';
 import '../bloc/register_bloc.dart';
 import '../bloc/register_event.dart';
 import '../bloc/register_state.dart';
-
-// Assume these imports exist
-// import 'register_bloc.dart';
-// import 'your_use_cases.dart';
-// import 'app_routes.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -116,7 +109,7 @@ class _RegisterViewState extends State<_RegisterView> {
                           height: size.height * 0.20,
                           child: Align(
                             alignment: Alignment.bottomCenter,
-                            child: Lottie.asset(
+                            child: Lottie.asset(repeat: false,
                               'assets/animations/secure_vault.json',
                               fit: BoxFit.contain,
                             ),

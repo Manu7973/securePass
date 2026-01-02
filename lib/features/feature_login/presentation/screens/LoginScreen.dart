@@ -97,6 +97,8 @@ class _LoginView extends StatelessWidget {
                 'Use Face ID or enter your passcode',
                 style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
+
+
               const SizedBox(height: 24),
 
               // 🔄 Dynamic content
@@ -214,7 +216,7 @@ class _PasscodePadState extends State<_PasscodePad> {
           }),
         ),
 
-        const SizedBox(height: 32),
+        const SizedBox(height: 56),
 
         // 🔢 PIN Pad with spacing between rows
         Column(
