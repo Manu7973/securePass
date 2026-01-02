@@ -1,4 +1,4 @@
-# securepass
+# SecurePass
 
 This app is to safely keep your passwords in your device storage without any internet interactions keeping passwords safe within your device.
 
