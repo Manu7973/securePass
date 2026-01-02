@@ -32,6 +32,7 @@ class _AddPasswordDialogState extends State<AddPasswordDialog> {
     context.read<PasswordBloc>().add(
       AddPassword(
         PasswordEntity(
+          id: null,
           site: siteCtrl.text.trim(),
           username: userCtrl.text.trim(),
           password: passCtrl.text.trim(),

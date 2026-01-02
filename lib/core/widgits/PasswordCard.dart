@@ -75,15 +75,6 @@ class PasswordCard extends StatelessWidget {
                       color: Colors.grey.shade600,
                     ),
                   ),
-                  // const SizedBox(height: 6),
-                  // Text(
-                  //   '••••••••••',
-                  //   style: TextStyle(
-                  //     fontSize: 14,
-                  //     color: Colors.grey.shade400,
-                  //     letterSpacing: 2,
-                  //   ),
-                  // ),
                 ],
               ),
             ),

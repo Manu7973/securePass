@@ -1,3 +1,4 @@
+import 'package:SecurePass/features/feature_home/domain/UpdatePasswordUseCase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -8,6 +9,7 @@ import 'core/storage/sharedPref/shared_Pref.dart';
 import 'features/feature_home/data/PasswordLocalDataSourceImpl.dart';
 import 'features/feature_home/data/hive_storage_passcode.dart';
 import 'features/feature_home/domain/AddPasswordUseCase.dart';
+import 'features/feature_home/domain/DeletePasswordUseCase.dart';
 import 'features/feature_home/domain/GetPasswordsUseCase.dart';
 import 'features/feature_home/domain/PasswordRepositoryImpl.dart';
 import 'features/feature_login/data/BiometricAuthService.dart';
@@ -64,6 +66,8 @@ void main() async {
 
   final getPasswordsUseCase = GetPasswordsUseCase(passwordRepository);
   final addPasswordUseCase = AddPasswordUseCase(passwordRepository);
+  final deletePasswordUseCase = DeletePasswordUseCase(passwordRepository);
+  final updatePasswordUseCase = UpdatePasswordUseCase(passwordRepository);
 
   //Settings
   // final settingsLocalDS = SettingsLocalDataSourceImpl(
@@ -88,6 +92,8 @@ void main() async {
         // Home (Vault)
         RepositoryProvider.value(value: getPasswordsUseCase),
         RepositoryProvider.value(value: addPasswordUseCase),
+        RepositoryProvider.value(value: deletePasswordUseCase),
+        RepositoryProvider.value(value: updatePasswordUseCase),
 
         // Settings
         RepositoryProvider<SettingsRepository>(

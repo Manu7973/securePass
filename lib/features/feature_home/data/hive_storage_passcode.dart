@@ -4,13 +4,13 @@ part  'hive_storage_passcode.g.dart';
 @HiveType(typeId: 1)
 class PasswordModel extends HiveObject {
   @HiveField(0)
-  final String siteName;
+   String siteName;
 
   @HiveField(1)
-  final String username;
+   String username;
 
   @HiveField(2)
-  final String password;
+  String password;
 
   PasswordModel({
     required this.siteName,

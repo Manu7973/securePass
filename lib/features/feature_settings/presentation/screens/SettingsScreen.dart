@@ -265,8 +265,58 @@ class SettingsScreen extends StatelessWidget {
   }
 
   void _appTourCardDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) {
+        return Dialog(
+          backgroundColor: Colors.grey,
+          insetPadding: const EdgeInsets.all(12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Stack(
+            children: [
+              // 🔍 Zoomable Image
+              InteractiveViewer(
+                minScale: 1.0,
+                maxScale: 4.0,
+                panEnabled: true,
+                child: Center(
+                  child: Image.asset(
+                    'assets/images/app_tour.png',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
 
+              Positioned(
+                top: 12,
+                right: 12,
+                child: InkWell(
+                  onTap: () => Navigator.pop(context),
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: const BoxDecoration(
+                      color: Colors.black54,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
+
 
   void _showChangePasscodeDialog(BuildContext parentContext) {
     final oldCtrl = TextEditingController();

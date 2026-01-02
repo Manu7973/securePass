@@ -1,7 +1,9 @@
+import 'package:SecurePass/features/feature_home/domain/UpdatePasswordUseCase.dart';
 import 'package:SecurePass/features/feature_settings/presentation/screens/SettingsScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../features/feature_home/domain/AddPasswordUseCase.dart';
+import '../../features/feature_home/domain/DeletePasswordUseCase.dart';
 import '../../features/feature_home/domain/GetPasswordsUseCase.dart';
 import '../../features/feature_home/presentation/bloc/home_bloc.dart';
 import '../../features/feature_home/presentation/bloc/home_event.dart';
@@ -48,6 +50,8 @@ class AppRoutes {
       create: (_) => PasswordBloc(
         getPasswords: context.read<GetPasswordsUseCase>(),
         addPassword: context.read<AddPasswordUseCase>(),
+        updatePassword: context.read<UpdatePasswordUseCase>(),
+        deletePassword: context.read<DeletePasswordUseCase>(),
       )..add(LoadPasswords()),
       child: const HomeScreen(),
     ),

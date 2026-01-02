@@ -248,14 +248,14 @@ class _RegisterViewState extends State<_RegisterView> {
                               height: 50,
                               child: CupertinoButton(
                                 color: CupertinoColors.activeBlue,
-                                disabledColor: CupertinoColors.systemGrey4,
+                                disabledColor: CupertinoColors.systemGrey,
                                 onPressed: state.canSubmit
                                     ? () => context.read<RegisterBloc>().add(
                                         RegisterSubmitted(),
                                       )
                                     : null,
                                 child: const Text(
-                                  'Continue',
+                                  'SignUp!',
                                   style: TextStyle(
                                     color: CupertinoColors.white,
                                   ),

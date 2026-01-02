@@ -17,4 +17,23 @@ class PasswordLocalDataSourceImpl implements PasswordLocalDataSource {
   Future<void> addPassword(PasswordModel model) async {
     await box.add(model);
   }
+
+  @override
+  Future<void> deletePassword(int id) async {
+    await box.delete(id);
+  }
+
+  @override
+  Future<void> updatePassword(int id, PasswordModel model) async {
+    final existing = box.get(id);
+
+    if (existing != null) {
+      existing
+        ..siteName = model.siteName
+        ..username = model.username
+        ..password = model.password;
+
+      await existing.save(); // 🔥 THIS updates Hive
+    }
+  }
 }
