@@ -25,12 +25,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<DeleteAllDataEvent>(_onDeleteAll);
   }
 
-  // Future<void> _onLoad(LoadSettings event,
-  //     Emitter<SettingsState> emit,) async {
-  //   final faceId = await repo.isFaceIdEnabled();
-  //   emit(state.copyWith(faceIdEnabled: faceId));
-  // }
-
   Future<void> _onLoad(LoadSettings event, Emitter<SettingsState> emit) async {
     final faceId = await repo.isFaceIdEnabled();
     final savedPasscode = await repo.getPasscode();
@@ -39,11 +33,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       passcode: savedPasscode,
     ));
   }
-
-  // Future<void> _onChangePasscode(ChangePasscodeEvent event,
-  //     Emitter<SettingsState> emit,) async {
-  //   await changePasscode(event.passcode);
-  // }
 
   Future<void> _onChangePasscode(
       ChangePasscodeEvent event,

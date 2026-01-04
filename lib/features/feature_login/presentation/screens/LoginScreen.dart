@@ -16,11 +16,14 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LoginBloc(
+      create: (context) =>
+      LoginBloc(
         getPasscode: context.read(),
         checkFaceId: context.read(),
         authenticateFaceId: context.read(),
-      )..add(LoginStarted()),
+      )
+        ..add(LoginStarted()),
+      // ),
       child: const _LoginView(),
     );
   }
@@ -31,7 +34,9 @@ class _LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery
+        .of(context)
+        .size;
 
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
@@ -40,6 +45,7 @@ class _LoginView extends StatelessWidget {
             SnackBar(
               content: Text(state.error),
               behavior: SnackBarBehavior.floating,
+              duration: const Duration(milliseconds: 1500),
               backgroundColor: CupertinoColors.systemRed,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -51,6 +57,7 @@ class _LoginView extends StatelessWidget {
             SnackBar(
               content: const Text('Login Successful'),
               behavior: SnackBarBehavior.floating,
+              duration: const Duration(milliseconds: 1500),
               backgroundColor: CupertinoColors.activeGreen,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -92,12 +99,11 @@ class _LoginView extends StatelessWidget {
               ),
               const SizedBox(height: 6),
 
-              if(Platform.isIOS)
-              const Text(
-                'Use Face ID or enter your passcode',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-
+              if (Platform.isIOS)
+                const Text(
+                  'Use Face ID or enter your passcode',
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
 
               const SizedBox(height: 24),
 
@@ -130,7 +136,13 @@ class _LoginView extends StatelessWidget {
                       );
                     }
 
-                    if (state is LoginPasscode || state is LoginFailure) {
+                    // if (state is LoginPasscode || state is LoginFailure) {
+                    //   return const _PasscodePad();
+                    // }
+
+                    if (state is LoginInitial ||
+                        state is LoginPasscode ||
+                        state is LoginFailure) {
                       return const _PasscodePad();
                     }
 
@@ -180,7 +192,9 @@ class _PasscodePadState extends State<_PasscodePad> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery
+        .of(context)
+        .size;
     final buttonSize = size.width / 6.5;
     const rowSpacing = 16.0; // spacing between rows
 
@@ -207,10 +221,10 @@ class _PasscodePadState extends State<_PasscodePad> {
               ),
               child: filled
                   ? const Icon(
-                      Icons.circle,
-                      size: 14,
-                      color: CupertinoColors.activeBlue,
-                    )
+                Icons.circle,
+                size: 14,
+                color: CupertinoColors.activeBlue,
+              )
                   : null,
             );
           }),
@@ -241,17 +255,23 @@ class _PasscodePadState extends State<_PasscodePad> {
         const SizedBox(height: 24),
 
         // 👤 Use Face ID button
-        if(Platform.isIOS)
-        TextButton.icon(
-          onPressed: () {
-            context.read<LoginBloc>().add(LoginStarted());
-          },
-          icon: const Icon(Icons.face, color: CupertinoColors.activeBlue),
-          label: const Text(
-            'Use Face ID',
-            style: TextStyle(color: CupertinoColors.activeBlue),
+        if (Platform.isIOS)
+          TextButton.icon(
+            // onPressed: () {
+            //   context.read<LoginBloc>().add(LoginStarted());
+            // },
+
+            onPressed: () {
+              context.read<LoginBloc>().add(
+                LoginStarted(fromButton: true),
+              );
+            },
+            icon: const Icon(Icons.face, color: CupertinoColors.activeBlue),
+            label: const Text(
+              'Use Face ID',
+              style: TextStyle(color: CupertinoColors.activeBlue),
+            ),
           ),
-        ),
       ],
     );
   }

@@ -25,7 +25,6 @@ class SettingsState {
     );
   }
 
-  /// (optional but recommended)
   factory SettingsState.initial() {
     return const SettingsState();
   }

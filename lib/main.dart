@@ -17,12 +17,9 @@ import 'features/feature_login/domain/AuthenticateWithFaceIdUseCase.dart';
 import 'features/feature_login/domain/CheckFaceIdUseCase.dart';
 import 'features/feature_login/domain/GetPasscodeUseCase.dart';
 import 'features/feature_login/domain/HasPasscodeUseCase.dart';
-import 'features/feature_login/presentation/screens/LoginScreen.dart';
 import 'features/feature_register/data/AuthRepositoryImpl.dart';
 import 'features/feature_login/data/login_authRepositoryImpl.dart';
 import 'features/feature_register/domain/SavePasscodeUseCase.dart';
-import 'features/feature_register/presentation/screens/register_screen.dart';
-import 'features/feature_settings/data/SettingsLocalDataSourceImpl.dart';
 import 'features/feature_settings/domain/ChangePasscode.dart';
 import 'features/feature_settings/domain/DeleteAllData.dart';
 import 'features/feature_settings/domain/SettingsRepository.dart';
@@ -68,12 +65,6 @@ void main() async {
   final addPasswordUseCase = AddPasswordUseCase(passwordRepository);
   final deletePasswordUseCase = DeletePasswordUseCase(passwordRepository);
   final updatePasswordUseCase = UpdatePasswordUseCase(passwordRepository);
-
-  //Settings
-  // final settingsLocalDS = SettingsLocalDataSourceImpl(
-  //   secureStorage: secureStorageDS,
-  //   passwordBox: passwordBox,
-  // );
 
   final settingsRepository = SettingsRepositoryImpl(secureStorageDS);
   final changePasscodeUseCase = ChangePasscode(settingsRepository);

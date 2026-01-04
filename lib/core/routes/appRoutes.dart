@@ -42,6 +42,7 @@ class AppRoutes {
         getPasscode: context.read<GetPasscodeUseCase>(),
         checkFaceId: context.read<CheckFaceIdUseCase>(),
         authenticateFaceId: context.read<AuthenticateWithFaceIdUseCase>(),
+      // ),
       )..add(LoginStarted()),
       child: const LoginScreen(),
     ),

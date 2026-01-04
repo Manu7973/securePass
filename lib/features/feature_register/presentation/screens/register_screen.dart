@@ -255,7 +255,7 @@ class _RegisterViewState extends State<_RegisterView> {
                                       )
                                     : null,
                                 child: const Text(
-                                  'SignUp!',
+                                  'Sign Up',
                                   style: TextStyle(
                                     color: CupertinoColors.white,
                                   ),

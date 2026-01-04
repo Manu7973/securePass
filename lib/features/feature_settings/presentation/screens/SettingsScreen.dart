@@ -119,7 +119,7 @@ class SettingsScreen extends StatelessWidget {
       onChanged: (value) {
         context.read<SettingsBloc>().add(ToggleFaceIdEvent(value));
       },
-      activeColor: Colors.green,
+      activeColor: CupertinoColors.activeBlue,
     );
   }
 
@@ -143,7 +143,7 @@ class SettingsScreen extends StatelessWidget {
   Widget _appTourCard({required List<Widget> children}) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFFF1F0F6),
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(

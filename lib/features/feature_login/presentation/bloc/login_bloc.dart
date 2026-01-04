@@ -21,15 +21,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<FaceIdFailed>((_, emit) => emit(LoginPasscode()));
   }
 
-  Future<void> _onStarted(
-      LoginStarted event,
-      Emitter<LoginState> emit,
-      ) async {
+  Future<void> _onStarted(LoginStarted event, Emitter<LoginState> emit) async {
     emit(LoginLoading());
 
     final isFaceEnabled = await checkFaceId();
 
     if (!isFaceEnabled) {
+      if (event.fromButton) {
+        emit(LoginFailure('Please log in and enable Face ID from Settings.'));
+      }
       emit(LoginPasscode());
       return;
     }
@@ -38,8 +38,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     emit(LoginFaceId());
 
     try {
-      final success = await authenticateFaceId()
-          .timeout(const Duration(seconds: 8));
+      final success = await authenticateFaceId().timeout(
+        const Duration(seconds: 8),
+      );
 
       if (success) {
         emit(LoginSuccess());
@@ -52,11 +53,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-
   Future<void> _onPasscodeEntered(
-      PasscodeEntered event,
-      Emitter<LoginState> emit,
-      ) async {
+    PasscodeEntered event,
+    Emitter<LoginState> emit,
+  ) async {
     final stored = await getPasscode();
     if (event.passcode == stored) {
       emit(LoginSuccess());
@@ -66,5 +66,3 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 }
-
-
