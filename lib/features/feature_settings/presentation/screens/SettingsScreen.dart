@@ -143,7 +143,7 @@ class SettingsScreen extends StatelessWidget {
   Widget _appTourCard({required List<Widget> children}) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF1F0F6),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
@@ -270,7 +270,7 @@ class SettingsScreen extends StatelessWidget {
       barrierDismissible: true,
       builder: (_) {
         return Dialog(
-          backgroundColor: Colors.grey,
+          backgroundColor: Color(0xFFF1F0F6),
           insetPadding: const EdgeInsets.all(12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -317,7 +317,6 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-
   void _showChangePasscodeDialog(BuildContext parentContext) {
     final oldCtrl = TextEditingController();
     final newCtrl = TextEditingController();
@@ -333,50 +332,97 @@ class SettingsScreen extends StatelessWidget {
       builder: (_) => StatefulBuilder(
         builder: (context, setState) {
           return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
+            insetPadding: const EdgeInsets.symmetric(horizontal: 20),
             backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(28),
+            ),
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Change Passcode',
+                  /// 🔐 Header
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(.08),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.lock_reset_rounded,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      const Text(
+                        'Change Passcode',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 6),
+                  Text(
+                    'Update your app security',
                     style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Colors.grey[600],
                     ),
                   ),
-                  const SizedBox(height: 16),
+
+                  const SizedBox(height: 28),
+
                   _passcodeField(
                     controller: oldCtrl,
-                    label: 'Old Passcode',
+                    label: 'Current Passcode',
                     obscure: obscureOld,
                     onToggle: () => setState(() => obscureOld = !obscureOld),
                   ),
-                  const SizedBox(height: 12),
+
+                  const SizedBox(height: 18),
+
                   _passcodeField(
                     controller: newCtrl,
                     label: 'New Passcode',
                     obscure: obscureNew,
                     onToggle: () => setState(() => obscureNew = !obscureNew),
                   ),
-                  const SizedBox(height: 12),
+
+                  const SizedBox(height: 18),
+
                   _passcodeField(
                     controller: confirmCtrl,
-                    label: 'Confirm Passcode',
+                    label: 'Confirm New Passcode',
                     obscure: obscureConfirm,
-                    onToggle: () => setState(() => obscureConfirm = !obscureConfirm),
+                    onToggle: () =>
+                        setState(() => obscureConfirm = !obscureConfirm),
                   ),
-                  const SizedBox(height: 20),
+
+                  const SizedBox(height: 32),
+
+                  /// 🎯 Actions
                   Row(
                     children: [
                       Expanded(
                         child: TextButton(
                           onPressed: () => Navigator.pop(parentContext),
-                          child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[700],
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -387,30 +433,38 @@ class SettingsScreen extends StatelessWidget {
                             final newPass = newCtrl.text.trim();
                             final confirmPass = confirmCtrl.text.trim();
 
-                            if (oldPass.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
-                              _showError(parentContext, 'All fields are required');
+                            if (oldPass.isEmpty ||
+                                newPass.isEmpty ||
+                                confirmPass.isEmpty) {
+                              _showError(
+                                  parentContext, 'All fields are required');
                               return;
                             }
 
                             if (newPass.length < 4) {
-                              _showError(parentContext, 'Passcode must be 4 digits');
+                              _showError(parentContext,
+                                  'Passcode must be 4 digits');
                               return;
                             }
 
                             final storedPasscode =
                                 parentContext.read<SettingsBloc>().state.passcode;
+
                             if (oldPass != storedPasscode) {
-                              _showError(parentContext, 'Old passcode is incorrect');
+                              _showError(parentContext,
+                                  'Old passcode is incorrect');
                               return;
                             }
 
                             if (oldPass == newPass) {
-                              _showError(parentContext, 'New passcode must be different');
+                              _showError(parentContext,
+                                  'New passcode must be different');
                               return;
                             }
 
                             if (newPass != confirmPass) {
-                              _showError(parentContext, 'Passcodes do not match');
+                              _showError(
+                                  parentContext, 'Passcodes do not match');
                               return;
                             }
 
@@ -422,9 +476,11 @@ class SettingsScreen extends StatelessWidget {
 
                             ScaffoldMessenger.of(parentContext).showSnackBar(
                               SnackBar(
-                                content: const Text('Passcode updated successfully'),
+                                content: const Text(
+                                    'Passcode updated successfully'),
                                 behavior: SnackBarBehavior.floating,
-                                backgroundColor: CupertinoColors.activeGreen,
+                                backgroundColor:
+                                CupertinoColors.activeGreen,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -434,14 +490,21 @@ class SettingsScreen extends StatelessWidget {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
-                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            padding:
+                            const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
                             ),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            elevation: 0,
                           ),
-                          child: const Text('Set Passcode'),
+                          child: const Text(
+                            'Update',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -474,19 +537,33 @@ class SettingsScreen extends StatelessWidget {
         labelText: label,
         counterText: '',
         filled: true,
-        fillColor: const Color(0xFFF6F7FB),
+        fillColor: Colors.grey.shade100,
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 18,
+          horizontal: 16,
+        ),
         suffixIcon: IconButton(
-          iconSize: 20,
-          icon: Icon(obscure ? Icons.visibility_off : Icons.visibility),
+          icon: Icon(
+            obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+            color: Colors.grey[600],
+          ),
           onPressed: onToggle,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,
         ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(
+            color: Colors.black,
+            width: 1.4,
+          ),
+        ),
       ),
     );
   }
+
 
   void _showError(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(

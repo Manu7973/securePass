@@ -63,56 +63,80 @@ class _EditPasswordDialogState extends State<EditPasswordDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Colors.white, // ✅ White dialog
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(28),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+      backgroundColor: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.all(22),
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
         child: Form(
           key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🔹 Title
+              /// 🔐 Header
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: CupertinoColors.activeBlue.withOpacity(.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.edit_outlined,
+                      color: CupertinoColors.activeBlue,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  const Text(
+                    'Edit Password',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 6),
               Text(
-                'Edit Password',
+                'Update your saved credentials',
                 style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.grey.shade900,
+                  fontSize: 14,
+                  color: Colors.grey[600],
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
 
               _buildField(
                 controller: siteCtrl,
-                label: 'Site name',
-                icon: Icons.language_rounded,
+                label: 'Website / App',
+                icon: Icons.public,
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 18),
 
               _buildField(
                 controller: userCtrl,
                 label: 'Username',
-                icon: Icons.person_outline_rounded,
+                icon: Icons.person_outline,
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 18),
 
               _buildField(
                 controller: passCtrl,
                 label: 'Password',
-                icon: Icons.lock_outline_rounded,
+                icon: Icons.lock_outline,
                 obscureText: _obscure,
                 suffix: IconButton(
                   icon: Icon(
                     _obscure
                         ? Icons.visibility_off_outlined
                         : Icons.visibility_outlined,
+                    color: Colors.grey[600],
                   ),
                   onPressed: () {
                     setState(() => _obscure = !_obscure);
@@ -120,35 +144,33 @@ class _EditPasswordDialogState extends State<EditPasswordDialog> {
                 ),
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: 32),
 
-              // 🔹 Actions
+              /// 🎯 Actions
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(
+                    child: TextButton(
                       onPressed: () => Navigator.pop(context),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.black, // ✅ Cancel text black
+                      style: TextButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Cancel',
                         style: TextStyle(
-                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          color: Colors.grey[700],
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: _save,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: CupertinoColors.activeBlue,
+                        elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
@@ -157,8 +179,9 @@ class _EditPasswordDialogState extends State<EditPasswordDialog> {
                       child: const Text(
                         'Save Changes',
                         style: TextStyle(
-                          color: Colors.white,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -182,20 +205,19 @@ class _EditPasswordDialogState extends State<EditPasswordDialog> {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
-      cursorColor: CupertinoColors.activeBlue, // ✅ cursor color
-      validator: (value) =>
-      value == null || value.trim().isEmpty ? '$label is required' : null,
+      cursorColor: CupertinoColors.activeBlue,
+      validator: (v) =>
+      v == null || v.trim().isEmpty ? '$label is required' : null,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.grey.shade600),
-        floatingLabelStyle: const TextStyle(
-          color: CupertinoColors.activeBlue, // ✅ floating label color
-          fontWeight: FontWeight.w600,
-        ),
-        prefixIcon: Icon(icon),
+        prefixIcon: Icon(icon, color: CupertinoColors.activeBlue),
         suffixIcon: suffix,
         filled: true,
         fillColor: Colors.grey.shade100,
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 18,
+          horizontal: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,
@@ -210,5 +232,5 @@ class _EditPasswordDialogState extends State<EditPasswordDialog> {
       ),
     );
   }
-
 }
+

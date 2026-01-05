@@ -16,7 +16,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Trigger password loading on first build
     final passwordBloc = context.read<PasswordBloc>();
     if (passwordBloc.state is PasswordInitial) {
       passwordBloc.add(LoadPasswords());
@@ -48,7 +47,7 @@ class HomeScreen extends StatelessWidget {
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
             builder: (_) => BlocProvider.value(
-              value: passwordBloc, // 👈 reuse the same bloc
+              value: passwordBloc,
               child: const AddPasswordDialog(),
             ),
           );
@@ -64,7 +63,7 @@ class HomeScreen extends StatelessWidget {
           if (state is PasswordInitial || state is PasswordLoading) {
             return const Center(
               child: CircularProgressIndicator(
-                color: CupertinoColors.activeBlue, // ✅ spinner color
+                color: CupertinoColors.activeBlue,
               ),
             );
           }
