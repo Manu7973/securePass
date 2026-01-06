@@ -35,6 +35,7 @@ class HomeScreen extends StatelessWidget {
             icon: const Icon(Icons.settings, color: Colors.black),
             onPressed: () {
               Navigator.of(context).pushNamed(AppRoutes.settings);
+              // Navigator.of(context).pushNamed(AppRoutes.testing);
             },
           ),
         ],
@@ -80,17 +81,6 @@ class HomeScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final item = state.passwords[index];
 
-                // return Dismissible(
-                //   key: ValueKey(item.id),
-                //   direction: DismissDirection.endToStart,
-                //   background: _deleteBackground(),
-                //   confirmDismiss: (_) => _confirmDelete(context),
-                //   onDismissed: (_) {
-                //     context.read<PasswordBloc>().add(DeletePassword(item.id!));
-                //   },
-                //   child: PasswordCard(item: item),
-                // );
-
                 return Dismissible(
                   key: ValueKey(item.id),
                   direction: DismissDirection.horizontal,
@@ -105,13 +95,10 @@ class HomeScreen extends StatelessWidget {
                     }
                   },
                   onDismissed: (_) {
-                    context.read<PasswordBloc>().add(
-                      DeletePassword(item.id!),
-                    );
+                    context.read<PasswordBloc>().add(DeletePassword(item.id!));
                   },
                   child: PasswordCard(item: item),
                 );
-
               },
             );
           }
@@ -154,7 +141,10 @@ class HomeScreen extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancel', style: TextStyle(color: Colors.black),),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
@@ -182,10 +172,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           Text(
             'Edit',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
           ),
           SizedBox(width: 8),
           Icon(Icons.edit, color: Colors.white),
@@ -205,5 +192,4 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
 }

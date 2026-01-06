@@ -1,5 +1,6 @@
+import 'dart:io';
 import 'package:SecurePass/features/feature_home/domain/UpdatePasswordUseCase.dart';
-import 'package:SecurePass/features/feature_settings/presentation/screens/SettingsScreen.dart';
+import 'package:SecurePass/features/feature_settings/presentation/screens/settings_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../features/feature_home/domain/AddPasswordUseCase.dart';
@@ -7,22 +8,28 @@ import '../../features/feature_home/domain/DeletePasswordUseCase.dart';
 import '../../features/feature_home/domain/GetPasswordsUseCase.dart';
 import '../../features/feature_home/presentation/bloc/home_bloc.dart';
 import '../../features/feature_home/presentation/bloc/home_event.dart';
-import '../../features/feature_home/presentation/screens/HomeScreen.dart';
+import '../../features/feature_home/presentation/screens/home_screen.dart';
 import '../../features/feature_login/domain/AuthenticateWithFaceIdUseCase.dart';
 import '../../features/feature_login/domain/CheckFaceIdUseCase.dart';
 import '../../features/feature_login/domain/GetPasscodeUseCase.dart';
 import '../../features/feature_login/presentation/bloc/login_bloc.dart';
 import '../../features/feature_login/presentation/bloc/login_event.dart';
-import '../../features/feature_login/presentation/screens/LoginScreen.dart';
+import '../../features/feature_login/presentation/screens/login_screen_android.dart';
+import '../../features/feature_login/presentation/screens/login_screen_ios.dart';
 import '../../features/feature_register/domain/SavePasscodeUseCase.dart';
 import '../../features/feature_register/presentation/bloc/register_bloc.dart';
-import '../../features/feature_register/presentation/screens/register_screen.dart';
+import '../../features/feature_register/presentation/screens/register_screen_ios.dart';
+import '../../features/feature_register/presentation/screens/register_screen_android.dart';
 import '../../features/feature_settings/domain/ChangePasscode.dart';
 import '../../features/feature_settings/domain/DeleteAllData.dart';
 import '../../features/feature_settings/domain/SettingsRepository.dart';
 import '../../features/feature_settings/domain/ToggleFaceId.dart';
 import '../../features/feature_settings/presentation/bloc/settings_bloc.dart';
 import '../../features/feature_settings/presentation/bloc/settings_event.dart';
+import '../../features/feature_test/presentation/bloc/TestBloc.dart';
+import '../../features/feature_test/presentation/bloc/TestEvent.dart';
+import '../../features/feature_test/presentation/screens/TestCounterScreen.dart';
+import '../storage/secureStorage/login_passcode_secure.dart';
 
 class AppRoutes {
   static const splash = '/splash';
@@ -30,11 +37,14 @@ class AppRoutes {
   static const login = '/login';
   static const home = '/home';
   static const settings = '/settings';
+  static const testing = '/testing';
 
   static Map<String, WidgetBuilder> routes = {
     register: (context) => BlocProvider(
       create: (_) => RegisterBloc(context.read<SavePasscodeUseCase>()),
-      child: const RegisterScreen(),
+      child: Platform.isIOS
+          ? const RegisterScreeniOS()
+          : const RegisterScreenAndroid(),
     ),
 
     login: (context) => BlocProvider(
@@ -42,9 +52,11 @@ class AppRoutes {
         getPasscode: context.read<GetPasscodeUseCase>(),
         checkFaceId: context.read<CheckFaceIdUseCase>(),
         authenticateFaceId: context.read<AuthenticateWithFaceIdUseCase>(),
-      // ),
+        // ),
       )..add(LoginStarted()),
-      child: const LoginScreen(),
+      child: Platform.isIOS
+          ? const LoginScreenIOS()
+          : const LoginScreenAndroid(),
     ),
 
     home: (context) => BlocProvider(
@@ -65,6 +77,11 @@ class AppRoutes {
         repo: context.read<SettingsRepository>(),
       )..add(LoadSettings()),
       child: const SettingsScreen(),
+    ),
+
+    testing: (context) => BlocProvider(
+      create: (_) => PasscodeBloc(LoginPasscodeSecure())..add(FetchPasscode()),
+      child: const TestCounterScreen(),
     ),
   };
 }

@@ -24,19 +24,19 @@ class SettingsScreen extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            duration: const Duration(seconds: 2),
           ),
         );
+
         Future.delayed(const Duration(milliseconds: 300), () {
           Navigator.pushNamedAndRemoveUntil(
             context,
             AppRoutes.register,
-                (route) => false,
+            (route) => false,
           );
         });
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFF6F7FB),
+        backgroundColor: const Color(0xFFF2F3F8),
         appBar: AppBar(
           title: const Text(
             'Settings',
@@ -44,8 +44,9 @@ class SettingsScreen extends StatelessWidget {
           ),
           centerTitle: true,
           elevation: 0,
-          backgroundColor: Colors.white,
+          backgroundColor: const Color(0xFFF2F3F8),
           foregroundColor: Colors.black,
+          surfaceTintColor: Colors.transparent,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16),
@@ -57,43 +58,57 @@ class SettingsScreen extends StatelessWidget {
                     children: [
                       _settingsTile(
                         title: 'Change Passcode',
+                        icon: Icons.lock_reset_rounded,
                         onTap: () => _showChangePasscodeDialog(context),
                       ),
                       if (Platform.isIOS) ...[
-                        _divider(),
+                        const Divider(height: 1),
                         _faceIdTile(context, state),
                       ],
                     ],
                   ),
-                  const SizedBox(height: 16),
+
+                  const SizedBox(height: 20),
+
                   _settingsCard(
                     children: [
                       _settingsTile(
                         title: 'App Info',
+                        icon: Icons.info_outline_rounded,
                         onTap: () => _showAppInfoDialog(context),
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 16),
-                  _appTourCard(
+                  const SizedBox(height: 20),
+
+                  _settingsCard(
                     children: [
                       _settingsTile(
                         title: 'App Tour',
+                        icon: Icons.map_outlined,
                         onTap: () => _appTourCardDialog(context),
                       ),
                     ],
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
+
                   _settingsCard(
                     children: [
                       ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                        ),
+                        leading: const Icon(
+                          Icons.delete_forever_rounded,
+                          color: Colors.red,
+                        ),
                         title: const Text(
                           'Delete All Data',
                           style: TextStyle(
                             color: Colors.red,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         onTap: () => _showDeleteDialog(context),
@@ -109,8 +124,44 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  Widget _settingsCard({required List<Widget> children}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(children: children),
+    );
+  }
+
+  Widget _settingsTile({
+    required String title,
+    required IconData icon,
+    VoidCallback? onTap,
+  }) {
+    return ListTile(
+      dense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      leading: Icon(icon),
+      title: Text(
+        title,
+        style: const TextStyle(fontSize: 15.5, fontWeight: FontWeight.w500),
+      ),
+      trailing: const Icon(Icons.chevron_right_rounded, size: 22),
+      onTap: onTap,
+    );
+  }
+
   Widget _faceIdTile(BuildContext context, SettingsState state) {
     return SwitchListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
       title: const Text(
         'Face ID Unlock',
         style: TextStyle(fontWeight: FontWeight.w500),
@@ -120,72 +171,117 @@ class SettingsScreen extends StatelessWidget {
         context.read<SettingsBloc>().add(ToggleFaceIdEvent(value));
       },
       activeColor: CupertinoColors.activeBlue,
+      inactiveThumbColor: Colors.grey.shade600,
+      inactiveTrackColor: Colors.grey.shade300,
     );
   }
-
-  Widget _settingsCard({required List<Widget> children}) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(children: children),
-    );
-  }
-
-  Widget _appTourCard({required List<Widget> children}) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(children: children),
-    );
-  }
-
-  Widget _settingsTile({required String title, VoidCallback? onTap}) {
-    return ListTile(
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: onTap,
-    );
-  }
-
-  Widget _divider() => const Divider(height: 1);
 
   void _showDeleteDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Delete All Data'),
-        content: const Text('This action cannot be undone. Are you sure?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(color: Colors.grey[800])),
+      barrierDismissible: false,
+      builder: (_) => Dialog(
+        backgroundColor: Colors.grey.shade50,
+        surfaceTintColor: Colors.grey.shade50,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.delete_forever_rounded,
+                  color: Colors.red,
+                  size: 36,
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Title
+              const Text(
+                'Delete All Data',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              // Description
+              const Text(
+                'This action will permanently remove all stored data from your device. '
+                    'This cannot be undone.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                  height: 1.4,
+                ),
+              ),
+
+              const SizedBox(height: 28),
+
+              // Actions
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(fontWeight: FontWeight.w600, color: Colors.black54),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        context
+                            .read<SettingsBloc>()
+                            .add(DeleteAllDataEvent());
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      child: const Text(
+                        'Delete',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              context.read<SettingsBloc>().add(DeleteAllDataEvent());
-            },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -194,7 +290,8 @@ class SettingsScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (_) => Dialog(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey.shade50,
+        surfaceTintColor: Colors.grey.shade50,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -272,9 +369,7 @@ class SettingsScreen extends StatelessWidget {
         return Dialog(
           backgroundColor: Color(0xFFF1F0F6),
           insetPadding: const EdgeInsets.all(12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Stack(
             children: [
               // 🔍 Zoomable Image
@@ -302,11 +397,7 @@ class SettingsScreen extends StatelessWidget {
                       color: Colors.black54,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 20,
-                    ),
+                    child: const Icon(Icons.close, color: Colors.white, size: 20),
                   ),
                 ),
               ),
@@ -371,10 +462,7 @@ class SettingsScreen extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     'Update your app security',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                   ),
 
                   const SizedBox(height: 28),
@@ -437,50 +525,59 @@ class SettingsScreen extends StatelessWidget {
                                 newPass.isEmpty ||
                                 confirmPass.isEmpty) {
                               _showError(
-                                  parentContext, 'All fields are required');
+                                parentContext,
+                                'All fields are required',
+                              );
                               return;
                             }
 
                             if (newPass.length < 4) {
-                              _showError(parentContext,
-                                  'Passcode must be 4 digits');
+                              _showError(
+                                parentContext,
+                                'Passcode must be 4 digits',
+                              );
                               return;
                             }
 
-                            final storedPasscode =
-                                parentContext.read<SettingsBloc>().state.passcode;
+                            final storedPasscode = parentContext
+                                .read<SettingsBloc>()
+                                .state
+                                .passcode;
 
                             if (oldPass != storedPasscode) {
-                              _showError(parentContext,
-                                  'Old passcode is incorrect');
+                              _showError(
+                                parentContext,
+                                'Old passcode is incorrect',
+                              );
                               return;
                             }
 
                             if (oldPass == newPass) {
-                              _showError(parentContext,
-                                  'New passcode must be different');
+                              _showError(
+                                parentContext,
+                                'New passcode must be different',
+                              );
                               return;
                             }
 
                             if (newPass != confirmPass) {
-                              _showError(
-                                  parentContext, 'Passcodes do not match');
+                              _showError(parentContext, 'Passcodes do not match');
                               return;
                             }
 
-                            parentContext
-                                .read<SettingsBloc>()
-                                .add(ChangePasscodeEvent(newPass));
+                            parentContext.read<SettingsBloc>().add(
+                              ChangePasscodeEvent(newPass),
+                            );
 
                             Navigator.pop(parentContext);
 
                             ScaffoldMessenger.of(parentContext).showSnackBar(
                               SnackBar(
                                 content: const Text(
-                                    'Passcode updated successfully'),
+                                  'Passcode updated successfully',
+                                ),
                                 behavior: SnackBarBehavior.floating,
-                                backgroundColor:
-                                CupertinoColors.activeGreen,
+                                backgroundColor: CupertinoColors.activeGreen,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -491,8 +588,7 @@ class SettingsScreen extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
                             elevation: 0,
-                            padding:
-                            const EdgeInsets.symmetric(vertical: 14),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
                             ),
@@ -538,10 +634,7 @@ class SettingsScreen extends StatelessWidget {
         counterText: '',
         filled: true,
         fillColor: Colors.grey.shade100,
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 18,
-          horizontal: 16,
-        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
         suffixIcon: IconButton(
           icon: Icon(
             obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
@@ -555,15 +648,11 @@ class SettingsScreen extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(
-            color: Colors.black,
-            width: 1.4,
-          ),
+          borderSide: const BorderSide(color: Colors.black, width: 1.4),
         ),
       ),
     );
   }
-
 
   void _showError(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -575,4 +664,5 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 }
+
 
