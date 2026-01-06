@@ -1,5 +1,6 @@
 import 'package:SecurePass/features/feature_home/domain/UpdatePasswordUseCase.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -31,6 +32,11 @@ void main() async {
 
   // Init Shared Preferences (if needed)
   await SharedPref.init();
+
+  //Status bar - Ios
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+  );
 
   // Initialize your data sources & repository
   final secureStorageDS = LoginPasscodeSecure();
