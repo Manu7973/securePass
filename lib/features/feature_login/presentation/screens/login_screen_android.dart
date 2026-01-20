@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/blocs/AppLockEvent.dart';
 import '../../../../core/routes/appRoutes.dart';
 import '../bloc/login_bloc.dart';
 import '../bloc/login_event.dart';
@@ -181,13 +182,6 @@ class _PasscodePadAndroidState extends State<_PasscodePadAndroid> {
             decoration: BoxDecoration(
               // color: Colors.white,
               borderRadius: BorderRadius.circular(18),
-              // boxShadow: [
-              //   BoxShadow(
-              //     blurRadius: 12,
-              //     color: Colors.black.withOpacity(0.05),
-              //     offset: const Offset(0, 6),
-              //   ),
-              // ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

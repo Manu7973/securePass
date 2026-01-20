@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/feature_home/domain/PasswordEntity.dart';
+import '../../features/feature_home/domain/SiteCategoryClassifier.dart';
 import '../../features/feature_home/presentation/bloc/home_bloc.dart';
 import '../../features/feature_home/presentation/bloc/home_event.dart';
 
@@ -46,13 +47,16 @@ class _EditPasswordDialogState extends State<EditPasswordDialog> {
   void _save() {
     if (!_formKey.currentState!.validate()) return;
 
+    final detectedCategory =
+    SiteCategoryClassifier.detect(siteCtrl.text.trim());
+
     context.read<PasswordBloc>().add(
       UpdatePassword(
         PasswordEntity(
           id: widget.item.id,
           site: siteCtrl.text.trim(),
           username: userCtrl.text.trim(),
-          password: passCtrl.text.trim(),
+          password: passCtrl.text.trim(), category: detectedCategory,
         ),
       ),
     );

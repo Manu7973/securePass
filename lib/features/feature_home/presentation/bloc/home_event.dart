@@ -18,3 +18,8 @@ class UpdatePassword extends PasswordEvent {
   final PasswordEntity entity;
   UpdatePassword(this.entity);
 }
+
+class SearchPasswords extends PasswordEvent {
+  final String query;
+  SearchPasswords(this.query);
+}

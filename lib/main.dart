@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'core/blocs/AppLockEvent.dart';
+import 'core/observers/AppLifecycleObserver.dart';
 import 'core/routes/appRoutes.dart';
 import 'core/storage/secureStorage/login_passcode_secure.dart';
 import 'core/storage/sharedPref/shared_Pref.dart';
@@ -77,6 +79,11 @@ void main() async {
   final toggleFaceIdUseCase = ToggleFaceId(settingsRepository);
   final deleteAllDataUseCase = DeleteAllData(settingsRepository);
 
+  // final appLockBloc = AppLockBloc();
+  // WidgetsBinding.instance.addObserver(
+  //   AppLifecycleObserver(appLockBloc),
+  // );
+
   runApp(
     MultiRepositoryProvider(
       providers: [
@@ -101,6 +108,8 @@ void main() async {
         ),
         RepositoryProvider<ToggleFaceId>(create: (_) => toggleFaceIdUseCase),
         RepositoryProvider<DeleteAllData>(create: (_) => deleteAllDataUseCase),
+
+        // BlocProvider.value(value: appLockBloc),
       ],
       child: MyApp(hc: hasPasscode),
     ),
@@ -122,3 +131,30 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+// class MyApp extends StatelessWidget {
+//   final bool hc;
+//
+//   const MyApp({super.key, required this.hc});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocListener<AppLockBloc, AppLockState>(
+//       listener: (context, state) {
+//         if (state.isLocked) {
+//           Navigator.pushNamedAndRemoveUntil(
+//             context,
+//             AppRoutes.login,
+//                 (_) => false,
+//           );
+//         }
+//       },
+//       child: MaterialApp(
+//         debugShowCheckedModeBanner: false,
+//         initialRoute: hc ? AppRoutes.login : AppRoutes.register,
+//         routes: AppRoutes.routes,
+//       ),
+//     );
+//
+//   }
+// }

@@ -17,19 +17,22 @@ class PasswordModelAdapter extends TypeAdapter<PasswordModel> {
       siteName: fields[0] as String,
       username: fields[1] as String,
       password: fields[2] as String,
+      category: (fields[3] ?? 'others') as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, PasswordModel obj) {
     writer
-      ..writeByte(3) // number of fields
+      ..writeByte(4) // number of fields
       ..writeByte(0)
       ..write(obj.siteName)
       ..writeByte(1)
       ..write(obj.username)
       ..writeByte(2)
-      ..write(obj.password);
+      ..write(obj.password)
+      ..writeByte(3)
+      ..write(obj.category);
   }
 
   @override
@@ -38,7 +41,7 @@ class PasswordModelAdapter extends TypeAdapter<PasswordModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PasswordModelAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+          other is PasswordModelAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }

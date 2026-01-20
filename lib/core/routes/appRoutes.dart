@@ -26,10 +26,6 @@ import '../../features/feature_settings/domain/SettingsRepository.dart';
 import '../../features/feature_settings/domain/ToggleFaceId.dart';
 import '../../features/feature_settings/presentation/bloc/settings_bloc.dart';
 import '../../features/feature_settings/presentation/bloc/settings_event.dart';
-import '../../features/feature_test/presentation/bloc/TestBloc.dart';
-import '../../features/feature_test/presentation/bloc/TestEvent.dart';
-import '../../features/feature_test/presentation/screens/TestCounterScreen.dart';
-import '../storage/secureStorage/login_passcode_secure.dart';
 
 class AppRoutes {
   static const splash = '/splash';
@@ -66,7 +62,7 @@ class AppRoutes {
         updatePassword: context.read<UpdatePasswordUseCase>(),
         deletePassword: context.read<DeletePasswordUseCase>(),
       )..add(LoadPasswords()),
-      child: const HomeScreen(),
+      child:  HomeScreen(),
     ),
 
     settings: (context) => BlocProvider(
@@ -77,11 +73,6 @@ class AppRoutes {
         repo: context.read<SettingsRepository>(),
       )..add(LoadSettings()),
       child: const SettingsScreen(),
-    ),
-
-    testing: (context) => BlocProvider(
-      create: (_) => PasscodeBloc(LoginPasscodeSecure())..add(FetchPasscode()),
-      child: const TestCounterScreen(),
     ),
   };
 }

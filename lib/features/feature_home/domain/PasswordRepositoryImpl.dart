@@ -2,6 +2,7 @@ import '../data/PasswordLocalDataSource.dart';
 import '../data/hive_storage_passcode.dart';
 import 'PasswordEntity.dart';
 import 'PasswordRepository.dart';
+import 'SiteCategory.dart';
 
 class PasswordRepositoryImpl implements PasswordRepository {
   final PasswordLocalDataSource local;
@@ -11,17 +12,21 @@ class PasswordRepositoryImpl implements PasswordRepository {
   @override
   Future<List<PasswordEntity>> getPasswords() async {
     final models = await local.getPasswords();
-    return models
-        .map(
-          (e) => PasswordEntity(
-        id: e.key as int,
-        site: e.siteName,
-        username: e.username,
-        password: e.password,
-      ),
-    )
-        .toList();
+
+    return models.map((model) {
+      return PasswordEntity(
+        id: model.key as int,
+        site: model.siteName,
+        username: model.username,
+        password: model.password,
+        category: SiteCategory.values.firstWhere(
+              (category) => category.name == model.category,
+          orElse: () => SiteCategory.other,
+        ),
+      );
+    }).toList();
   }
+
 
   @override
   Future<void> addPassword(PasswordEntity entity) async {
@@ -30,6 +35,7 @@ class PasswordRepositoryImpl implements PasswordRepository {
         siteName: entity.site,
         username: entity.username,
         password: entity.password,
+        category: entity.category.name,
       ),
     );
   }
@@ -47,6 +53,7 @@ class PasswordRepositoryImpl implements PasswordRepository {
         siteName: entity.site,
         username: entity.username,
         password: entity.password,
+        category: entity.category.name,
       ),
     );
   }
