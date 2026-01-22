@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/blocs/AppLockEvent.dart';
 import '../../../../core/routes/appRoutes.dart';
 import '../bloc/login_bloc.dart';
 import '../bloc/login_event.dart';
@@ -46,12 +44,13 @@ class _LoginViewAndroid extends StatelessWidget {
             ),
           );
         } else if (state is LoginSuccess) {
-          Future.microtask(() =>
-              Navigator.of(context).pushReplacementNamed(AppRoutes.home));
+          Future.microtask(
+            () => Navigator.of(context).pushReplacementNamed(AppRoutes.home),
+          );
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.grey.shade50, // main background
+        backgroundColor: Colors.grey.shade100, // main background
         body: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) => SingleChildScrollView(
@@ -88,10 +87,7 @@ class _LoginViewAndroid extends StatelessWidget {
                       const SizedBox(height: 6),
                       const Text(
                         'Enter your passcode to continue',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.grey,
-                        ),
+                        style: TextStyle(fontSize: 15, color: Colors.grey),
                       ),
 
                       const SizedBox(height: 32),
@@ -101,15 +97,18 @@ class _LoginViewAndroid extends StatelessWidget {
 
                       const Spacer(),
 
-                      // Optional Fingerprint login (if available)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 32),
                         child: TextButton.icon(
                           onPressed: () {
-                            // Trigger fingerprint if supported
+                            context.read<LoginBloc>().add(
+                              LoginStarted(fromButton: true),
+                            );
                           },
-                          icon: const Icon(Icons.fingerprint,
-                              color: Colors.blue),
+                          icon: const Icon(
+                            Icons.fingerprint,
+                            color: Colors.blue,
+                          ),
                           label: const Text(
                             'Use Fingerprint',
                             style: TextStyle(
@@ -120,9 +119,12 @@ class _LoginViewAndroid extends StatelessWidget {
                           style: TextButton.styleFrom(
                             backgroundColor: Colors.transparent,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
                             padding: const EdgeInsets.symmetric(
-                                vertical: 14, horizontal: 24),
+                              vertical: 14,
+                              horizontal: 24,
+                            ),
                           ),
                         ),
                       ),
@@ -161,8 +163,10 @@ class _PasscodePadAndroidState extends State<_PasscodePadAndroid> {
   void _onBackspacePressed() {
     if (_enteredPasscode.isNotEmpty) {
       setState(() {
-        _enteredPasscode =
-            _enteredPasscode.substring(0, _enteredPasscode.length - 1);
+        _enteredPasscode = _enteredPasscode.substring(
+          0,
+          _enteredPasscode.length - 1,
+        );
       });
     }
   }

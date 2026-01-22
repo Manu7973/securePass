@@ -12,7 +12,6 @@ class LoginSuccess extends LoginState {}
 
 class LoginFailure extends LoginState {
   final String error;
+
   LoginFailure(this.error);
 }
-
-

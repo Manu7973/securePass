@@ -1,11 +1,10 @@
+import 'dart:io';
+
 import 'package:SecurePass/features/feature_home/domain/UpdatePasswordUseCase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
-import 'core/blocs/AppLockEvent.dart';
-import 'core/observers/AppLifecycleObserver.dart';
 import 'core/routes/appRoutes.dart';
 import 'core/storage/secureStorage/login_passcode_secure.dart';
 import 'core/storage/sharedPref/shared_Pref.dart';
@@ -16,6 +15,7 @@ import 'features/feature_home/domain/DeletePasswordUseCase.dart';
 import 'features/feature_home/domain/GetPasswordsUseCase.dart';
 import 'features/feature_home/domain/PasswordRepositoryImpl.dart';
 import 'features/feature_login/data/BiometricAuthService.dart';
+import 'features/feature_login/domain/AuthRepository.dart';
 import 'features/feature_login/domain/AuthenticateWithFaceIdUseCase.dart';
 import 'features/feature_login/domain/CheckFaceIdUseCase.dart';
 import 'features/feature_login/domain/GetPasscodeUseCase.dart';
@@ -36,9 +36,7 @@ void main() async {
   await SharedPref.init();
 
   //Status bar - Ios
-  SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.edgeToEdge,
-  );
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   // Initialize your data sources & repository
   final secureStorageDS = LoginPasscodeSecure();
@@ -50,8 +48,16 @@ void main() async {
   Hive.registerAdapter(PasswordModelAdapter());
 
   final registerAuthRepo = AuthRepositoryImpl(secureStorageDS);
-  final faceIdService = FaceIdAuthService();
-  final loginAuthRepo = LoginAuthRepositoryImpl(secureStorageDS, faceIdService);
+  late final AuthRepository loginAuthRepo;
+
+  if (Platform.isIOS) {
+    final faceIdService = FaceIdAuthService();
+    loginAuthRepo = LoginAuthRepositoryImpl(secureStorageDS, faceIdService);
+  } else {
+    // final androidBiometricService = AndroidBiometricAuthService();
+    final faceIdService = FaceIdAuthService();
+    loginAuthRepo = LoginAuthRepositoryImpl(secureStorageDS, faceIdService);
+  }
 
   // Initialize Use Cases
   final savePasscodeUseCase = SavePasscodeUseCase(registerAuthRepo);
@@ -78,11 +84,6 @@ void main() async {
   final changePasscodeUseCase = ChangePasscode(settingsRepository);
   final toggleFaceIdUseCase = ToggleFaceId(settingsRepository);
   final deleteAllDataUseCase = DeleteAllData(settingsRepository);
-
-  // final appLockBloc = AppLockBloc();
-  // WidgetsBinding.instance.addObserver(
-  //   AppLifecycleObserver(appLockBloc),
-  // );
 
   runApp(
     MultiRepositoryProvider(
@@ -124,37 +125,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
       initialRoute: hc ? AppRoutes.login : AppRoutes.register,
-      // home: hc ? const LoginScreen() : const RegisterScreen(),
       routes: AppRoutes.routes,
     );
   }
 }
-
-// class MyApp extends StatelessWidget {
-//   final bool hc;
-//
-//   const MyApp({super.key, required this.hc});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocListener<AppLockBloc, AppLockState>(
-//       listener: (context, state) {
-//         if (state.isLocked) {
-//           Navigator.pushNamedAndRemoveUntil(
-//             context,
-//             AppRoutes.login,
-//                 (_) => false,
-//           );
-//         }
-//       },
-//       child: MaterialApp(
-//         debugShowCheckedModeBanner: false,
-//         initialRoute: hc ? AppRoutes.login : AppRoutes.register,
-//         routes: AppRoutes.routes,
-//       ),
-//     );
-//
-//   }
-// }

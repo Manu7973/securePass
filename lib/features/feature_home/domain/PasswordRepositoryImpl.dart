@@ -23,6 +23,7 @@ class PasswordRepositoryImpl implements PasswordRepository {
               (category) => category.name == model.category,
           orElse: () => SiteCategory.other,
         ),
+        isfav: model.isFav
       );
     }).toList();
   }
@@ -36,6 +37,7 @@ class PasswordRepositoryImpl implements PasswordRepository {
         username: entity.username,
         password: entity.password,
         category: entity.category.name,
+        isFav: entity.isfav
       ),
     );
   }
@@ -54,6 +56,7 @@ class PasswordRepositoryImpl implements PasswordRepository {
         username: entity.username,
         password: entity.password,
         category: entity.category.name,
+        isFav: entity.isfav
       ),
     );
   }

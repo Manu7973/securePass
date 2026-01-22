@@ -2,12 +2,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/AddPasswordUseCase.dart';
 import '../../domain/DeletePasswordUseCase.dart';
+import '../../domain/FilterPasswords.dart';
 import '../../domain/GetPasswordsUseCase.dart';
 import '../../domain/PasswordEntity.dart';
 import '../../domain/UpdatePasswordUseCase.dart';
 import 'home_event.dart';
 import 'home_state.dart';
-
 
 class PasswordBloc extends Bloc<PasswordEvent, PasswordState> {
   final GetPasswordsUseCase getPasswords;
@@ -16,6 +16,9 @@ class PasswordBloc extends Bloc<PasswordEvent, PasswordState> {
   final UpdatePasswordUseCase updatePassword;
 
   List<PasswordEntity> _allPasswords = [];
+  bool _showFavoritesOnly = false; // runtime only
+
+  bool get isFavoritesOnly => _showFavoritesOnly;
 
   PasswordBloc({
     required this.getPasswords,
@@ -28,17 +31,22 @@ class PasswordBloc extends Bloc<PasswordEvent, PasswordState> {
     on<DeletePassword>(_onDelete);
     on<UpdatePassword>(_onUpdate);
     on<SearchPasswords>(_onSearch);
+    on<ToggleFavoritePassword>(_onToggleFavorite);
+    on<FilterPasswords>(_onFilter);
   }
 
-  Future<void> _onLoad(LoadPasswords event, Emitter<PasswordState> emit) async {
+  Future<void> _onLoad(
+      LoadPasswords event,
+      Emitter<PasswordState> emit,
+      ) async {
     emit(PasswordLoading());
-    final passwords = await getPasswords();
-    _allPasswords = passwords;
-    if (passwords.isEmpty) {
-      emit(PasswordEmpty());
-    } else {
-      emit(PasswordLoaded(passwords));
-    }
+    _allPasswords = await getPasswords();
+    _emitFiltered(emit);
+  }
+
+  Future<void> _onAdd(AddPassword event, Emitter<PasswordState> emit) async {
+    await addPassword(event.entity);
+    add(LoadPasswords());
   }
 
   Future<void> _onDelete(
@@ -46,12 +54,7 @@ class PasswordBloc extends Bloc<PasswordEvent, PasswordState> {
       Emitter<PasswordState> emit,
       ) async {
     await deletePassword(event.id);
-    add(LoadPasswords()); // refresh list
-  }
-
-  Future<void> _onAdd(AddPassword event, Emitter<PasswordState> emit) async {
-    await addPassword(event.entity);
-    add(LoadPasswords()); // reload after add
+    add(LoadPasswords());
   }
 
   Future<void> _onUpdate(
@@ -59,7 +62,7 @@ class PasswordBloc extends Bloc<PasswordEvent, PasswordState> {
       Emitter<PasswordState> emit,
       ) async {
     await updatePassword(event.entity);
-    add(LoadPasswords()); // refresh list
+    add(LoadPasswords());
   }
 
   void _onSearch(
@@ -68,20 +71,54 @@ class PasswordBloc extends Bloc<PasswordEvent, PasswordState> {
       ) {
     final query = event.query.trim().toLowerCase();
 
-    if (query.isEmpty) {
-      emit(_allPasswords.isEmpty
-          ? PasswordEmpty()
-          : PasswordLoaded(_allPasswords));
-      return;
-    }
+    final baseList = _showFavoritesOnly
+        ? _allPasswords.where((p) => p.isfav).toList()
+        : _allPasswords;
 
-    final filtered = _allPasswords.where((password) {
-      return password.site.toLowerCase().contains(query);
+    final filtered = query.isEmpty
+        ? baseList
+        : baseList
+        .where((p) => p.site.toLowerCase().contains(query))
+        .toList();
+
+    emit(filtered.isEmpty ? PasswordEmpty() : PasswordLoaded(filtered));
+  }
+
+  Future<void> _onToggleFavorite(
+      ToggleFavoritePassword event,
+      Emitter<PasswordState> emit,
+      ) async {
+    final updatedEntity = PasswordEntity(
+      id: event.entity.id,
+      site: event.entity.site,
+      username: event.entity.username,
+      password: event.entity.password,
+      category: event.entity.category,
+      isfav: !event.entity.isfav,
+    );
+
+    await updatePassword(updatedEntity);
+
+    _allPasswords = _allPasswords.map((p) {
+      return p.id == updatedEntity.id ? updatedEntity : p;
     }).toList();
 
-    emit(filtered.isEmpty
-        ? PasswordEmpty()
-        : PasswordLoaded(filtered));
+    _emitFiltered(emit);
+  }
+
+  void _onFilter(
+      FilterPasswords event,
+      Emitter<PasswordState> emit,
+      ) {
+    _showFavoritesOnly = event.showFavoritesOnly;
+    _emitFiltered(emit);
+  }
+
+  void _emitFiltered(Emitter<PasswordState> emit) {
+    final list = _showFavoritesOnly
+        ? _allPasswords.where((p) => p.isfav).toList()
+        : _allPasswords;
+
+    emit(list.isEmpty ? PasswordEmpty() : PasswordLoaded(list));
   }
 }
-

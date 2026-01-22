@@ -1,4 +1,6 @@
-class RegisterState {
+import 'package:equatable/equatable.dart';
+
+class RegisterState extends Equatable {
   final String enteredDigits;
   final String confirmDigits;
   final bool isConfirmStep;
@@ -15,7 +17,10 @@ class RegisterState {
     this.error,
   });
 
-  bool get canSubmit => isConfirmStep && confirmDigits.length == 4;
+  bool get canSubmit =>
+      isConfirmStep &&
+          confirmDigits.length == 4 &&
+          enteredDigits.length == 4;
 
   RegisterState copyWith({
     String? enteredDigits,
@@ -34,4 +39,15 @@ class RegisterState {
       error: error,
     );
   }
+
+  @override
+  List<Object?> get props => [
+    enteredDigits,
+    confirmDigits,
+    isConfirmStep,
+    faceIdEnabled,
+    success,
+    error,
+  ];
 }
+

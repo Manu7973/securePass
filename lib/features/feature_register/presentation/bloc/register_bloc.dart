@@ -27,7 +27,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       }
     } else {
       if (state.confirmDigits.length < 4) {
-        emit(state.copyWith(confirmDigits: state.confirmDigits + event.digit));
+        emit(state.copyWith(
+          confirmDigits: state.confirmDigits + event.digit,
+        ));
       }
     }
   }
@@ -46,20 +48,31 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     }
   }
 
-  void _onFaceIdToggled(FaceIdToggled event, Emitter<RegisterState> emit) {
+  void _onFaceIdToggled(
+      FaceIdToggled event,
+      Emitter<RegisterState> emit,
+      ) {
     emit(state.copyWith(faceIdEnabled: event.enabled));
   }
 
-  void _onRegisterSubmitted(
-      RegisterSubmitted event, Emitter<RegisterState> emit) async {
+  Future<void> _onRegisterSubmitted(
+      RegisterSubmitted event,
+      Emitter<RegisterState> emit,
+      ) async {
     if (state.enteredDigits != state.confirmDigits) {
-      emit(state.copyWith(error: 'Passcodes do not match', success: false));
+      emit(state.copyWith(
+        error: 'Passcodes do not match',
+        success: false,
+      ));
       return;
     }
 
     try {
       await savePasscodeUseCase(
-        Passcode(code: state.enteredDigits, faceIdEnabled: state.faceIdEnabled),
+        Passcode(
+          code: state.enteredDigits,
+          faceIdEnabled: state.faceIdEnabled,
+        ),
       );
       emit(state.copyWith(success: true, error: null));
     } catch (e) {
@@ -67,3 +80,5 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     }
   }
 }
+
+

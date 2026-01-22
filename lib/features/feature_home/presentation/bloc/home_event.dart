@@ -23,3 +23,8 @@ class SearchPasswords extends PasswordEvent {
   final String query;
   SearchPasswords(this.query);
 }
+
+class ToggleFavoritePassword extends PasswordEvent {
+  final PasswordEntity entity;
+  ToggleFavoritePassword(this.entity);
+}

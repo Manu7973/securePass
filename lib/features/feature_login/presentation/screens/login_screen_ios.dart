@@ -191,13 +191,6 @@ class _PasscodePadIOSState extends State<_PasscodePadIOS> {
             decoration: BoxDecoration(
               // color: CupertinoColors.white,
               borderRadius: BorderRadius.circular(18),
-              // boxShadow: [
-              //   BoxShadow(
-              //     blurRadius: 12,
-              //     color: Colors.black.withOpacity(0.05),
-              //     offset: const Offset(0, 6),
-              //   ),
-              // ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

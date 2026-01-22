@@ -19,11 +19,15 @@ class PasswordModel extends HiveObject {
   @HiveField(3)
   String category;
 
+  @HiveField(4)
+  bool isFav;
+
   PasswordModel({
     required this.siteName,
     required this.username,
     required this.password,
     required this.category,
+    required this.isFav
   });
 
   factory PasswordModel.fromJson(Map<String, dynamic> json) {
@@ -32,6 +36,7 @@ class PasswordModel extends HiveObject {
       username: json['username'] ?? '',
       password: json['password'] ?? '',
       category: json['category'] ?? '',
+      isFav: json['isFav'] ?? false,
     );
   }
 }

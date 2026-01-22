@@ -6,6 +6,7 @@ class PasswordEntity {
   final String username;
   final String password;
   final SiteCategory category;
+  final bool isfav;
 
   PasswordEntity({
     required this.id,
@@ -13,5 +14,6 @@ class PasswordEntity {
     required this.username,
     required this.password,
     required this.category,
+    required this.isfav,
   });
 }

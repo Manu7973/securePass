@@ -12,6 +12,7 @@ extension PasswordModelMapper on PasswordModel {
           (e) => e.name == category,
       orElse: () => SiteCategory.unknown,
     ),
+    isfav: isFav
   );
 }
 
@@ -21,5 +22,6 @@ extension PasswordEntityMapper on PasswordEntity {
     username: username,
     password: password,
     category: category.name,
+    isFav: isfav
   );
 }

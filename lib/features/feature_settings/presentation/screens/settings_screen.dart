@@ -36,7 +36,7 @@ class SettingsScreen extends StatelessWidget {
         });
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFF2F3F8),
+          backgroundColor: Colors.grey.shade100,
         appBar: AppBar(
           title: const Text(
             'Settings',
@@ -44,7 +44,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           centerTitle: true,
           elevation: 0,
-          backgroundColor: const Color(0xFFF2F3F8),
+          backgroundColor: Colors.grey.shade100,
           foregroundColor: Colors.black,
           surfaceTintColor: Colors.transparent,
         ),
@@ -61,10 +61,8 @@ class SettingsScreen extends StatelessWidget {
                         icon: Icons.lock_reset_rounded,
                         onTap: () => _showChangePasscodeDialog(context),
                       ),
-                      if (Platform.isIOS) ...[
-                        const Divider(height: 1),
-                        _faceIdTile(context, state),
-                      ],
+                      const Divider(height: 1),
+                      _biometricTile(context, state),
                     ],
                   ),
 
@@ -175,6 +173,33 @@ class SettingsScreen extends StatelessWidget {
       inactiveTrackColor: Colors.grey.shade300,
     );
   }
+
+  Widget _biometricTile(BuildContext context, SettingsState state) {
+    final isIOS = Platform.isIOS;
+
+    return SwitchListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+      title: Text(
+        isIOS ? 'Face ID Unlock' : 'Biometric Unlock',
+        style: const TextStyle(fontWeight: FontWeight.w500),
+      ),
+      subtitle: !isIOS
+          ? const Text(
+        'Use fingerprint or face authentication',
+        style: TextStyle(fontSize: 12),
+      )
+          : null,
+      secondary: Icon(
+        isIOS ? Icons.face : Icons.fingerprint,
+      ),
+      value: state.faceIdEnabled,
+      onChanged: (value) {
+        context.read<SettingsBloc>().add(ToggleFaceIdEvent(value));
+      },
+      activeColor: isIOS ? CupertinoColors.activeBlue : Colors.blue,
+    );
+  }
+
 
   void _showDeleteDialog(BuildContext context) {
     showDialog(

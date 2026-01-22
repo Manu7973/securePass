@@ -1,5 +1,6 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/AuthRepository.dart';
 import '../../domain/AuthenticateWithFaceIdUseCase.dart';
 import '../../domain/CheckFaceIdUseCase.dart';
 import '../../domain/GetPasscodeUseCase.dart';
@@ -24,31 +25,33 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Future<void> _onStarted(LoginStarted event, Emitter<LoginState> emit) async {
     emit(LoginLoading());
 
-    final isFaceEnabled = await checkFaceId();
+    final isBiometricAvailable = await checkFaceId();
 
-    if (!isFaceEnabled) {
+    if (!isBiometricAvailable) {
       if (event.fromButton) {
-        emit(LoginFailure('Please log in and enable Face ID from Settings.'));
+        emit(
+          LoginFailure(
+            Platform.isIOS
+                ? 'Please log in and enable Face ID from Settings.'
+                : 'Biometric authentication is not available on this device.',
+          ),
+        );
       }
       emit(LoginPasscode());
       return;
     }
 
-    // Show Face ID UI
     emit(LoginFaceId());
 
     try {
-      final success = await authenticateFaceId().timeout(
-        const Duration(seconds: 8),
-      );
-
+      final success = await authenticateFaceId();
+      print('Biometric result: $success');
       if (success) {
         emit(LoginSuccess());
       } else {
         emit(LoginPasscode());
       }
-    } catch (e) {
-      // 🔥 THIS prevents infinite loading on real device
+    } catch (_) {
       emit(LoginPasscode());
     }
   }

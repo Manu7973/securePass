@@ -57,6 +57,7 @@ class _EditPasswordDialogState extends State<EditPasswordDialog> {
           site: siteCtrl.text.trim(),
           username: userCtrl.text.trim(),
           password: passCtrl.text.trim(), category: detectedCategory,
+          isfav: false
         ),
       ),
     );

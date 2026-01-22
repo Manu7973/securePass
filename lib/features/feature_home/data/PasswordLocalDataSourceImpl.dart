@@ -32,9 +32,10 @@ class PasswordLocalDataSourceImpl implements PasswordLocalDataSource {
         ..siteName = model.siteName
         ..username = model.username
         ..password = model.password
-        ..category = model.category;
+        ..category = model.category
+        ..isFav = model.isFav;
 
-      await existing.save(); // 🔥 THIS updates Hive
+      await existing.save();
     }
   }
 }

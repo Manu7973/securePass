@@ -66,6 +66,7 @@ class _AddPasswordDialogState extends State<AddPasswordDialog> {
           username: userCtrl.text.trim(),
           password: passCtrl.text.trim(),
           category: detectedCategory,
+          isfav: false
         ),
       ),
     );
