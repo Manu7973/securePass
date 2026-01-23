@@ -15,56 +15,59 @@ class PasswordFilterDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 12,
-            offset: const Offset(0, -4),
+    return SafeArea(
+      top: true,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 12,
+                offset: const Offset(0, -4),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade300,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'Filter Passwords',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          _buildOption(
-            context,
-            icon: Icons.list_alt_rounded,
-            text: 'All',
-            selected: selected == PasswordFilter.all,
-            onTap: () => onSelected(PasswordFilter.all),
-          ),
-          const SizedBox(height: 12),
-          _buildOption(
-            context,
-            icon: Icons.favorite_rounded,
-            text: 'Favorites Only',
-            selected: selected == PasswordFilter.favorites,
-            iconColor: Colors.red,
-            onTap: () => onSelected(PasswordFilter.favorites),
-          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Filter Passwords',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              _buildOption(
+                context,
+                icon: Icons.list_alt_rounded,
+                text: 'All',
+                selected: selected == PasswordFilter.all,
+                onTap: () => onSelected(PasswordFilter.all),
+              ),
+              const SizedBox(height: 12),
+              _buildOption(
+                context,
+                icon: Icons.favorite_rounded,
+                text: 'Favorites Only',
+                selected: selected == PasswordFilter.favorites,
+                iconColor: Colors.red,
+                onTap: () => onSelected(PasswordFilter.favorites),
+              ),
 
-          const SizedBox(height: 20),
-        ],
-      ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
     );
   }
 
@@ -94,7 +97,9 @@ class PasswordFilterDialog extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: iconColor ?? (selected ? CupertinoColors.activeBlue : Colors.grey),
+              color:
+                  iconColor ??
+                  (selected ? CupertinoColors.activeBlue : Colors.grey),
             ),
             const SizedBox(width: 12),
             // Text stays same
@@ -108,7 +113,11 @@ class PasswordFilterDialog extends StatelessWidget {
             ),
             const Spacer(),
             if (selected)
-              Icon(Icons.check_circle, color: CupertinoColors.activeBlue, size: 20),
+              Icon(
+                Icons.check_circle,
+                color: CupertinoColors.activeBlue,
+                size: 20,
+              ),
           ],
         ),
       ),

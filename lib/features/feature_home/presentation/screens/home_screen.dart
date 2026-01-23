@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/routes/appRoutes.dart';
-import '../../../../core/widgits/AddPasswordDialog.dart';
+import '../../../../core/widgits/AnimatedFab.dart';
 import '../../../../core/widgits/DeleteDialog.dart';
 import '../../../../core/widgits/EditPasswordDialog.dart';
 import '../../../../core/widgits/EmptyVaultView.dart';
@@ -49,7 +48,7 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      floatingActionButton: _fab(context, bloc),
+      floatingActionButton: AnimatedFab(bloc: context.read<PasswordBloc>()),
       body: CustomScrollView(
         controller: _controller,
         physics: const BouncingScrollPhysics(
@@ -111,31 +110,42 @@ class HomeScreen extends StatelessWidget {
     return SliverToBoxAdapter(
       child: ValueListenableBuilder<bool>(
         valueListenable: _showSearch,
-        builder: (_, visible, __) {
+        builder: (_, visible, _) {
           return AnimatedSize(
             duration: const Duration(milliseconds: 260),
             curve: Curves.easeOutCubic,
             child: visible
                 ? Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search by site name',
-                        prefixIcon: const Icon(Icons.search),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      onChanged: (query) {
-                        context.read<PasswordBloc>().add(
-                          SearchPasswords(query),
-                        );
-                      },
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: SizedBox(
+                height: 42, // compact height
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search by site name',
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      size: 20,
                     ),
-                  )
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 12,
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  style: const TextStyle(fontSize: 14),
+                  onChanged: (query) {
+                    context.read<PasswordBloc>().add(
+                      SearchPasswords(query),
+                    );
+                  },
+                ),
+              ),
+            )
                 : const SizedBox.shrink(),
           );
         },
@@ -161,10 +171,10 @@ class HomeScreen extends StatelessWidget {
 
         if (state is PasswordLoaded) {
           return SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 90),
             sliver: SliverList.separated(
               itemCount: state.passwords.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 14),
+              separatorBuilder: (_, _) => const SizedBox(height: 2),
               itemBuilder: (context, index) {
                 final item = state.passwords[index];
 
@@ -192,23 +202,6 @@ class HomeScreen extends StatelessWidget {
         }
 
         return const SliverToBoxAdapter();
-      },
-    );
-  }
-
-  FloatingActionButton _fab(BuildContext context, PasswordBloc bloc) {
-    return FloatingActionButton.extended(
-      backgroundColor: CupertinoColors.activeBlue,
-      icon: const Icon(Icons.add, color: Colors.white),
-      label: const Text('Add Password', style: TextStyle(color: Colors.white)),
-      onPressed: () {
-        showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          builder: (_) =>
-              BlocProvider.value(value: bloc, child: const AddPasswordDialog()),
-        );
       },
     );
   }

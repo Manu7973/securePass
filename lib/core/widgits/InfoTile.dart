@@ -7,6 +7,7 @@ class InfoTile extends StatelessWidget {
   final VoidCallback onCopy;
 
   const InfoTile({
+    super.key,
     required this.label,
     required this.value,
     required this.onCopy,
@@ -21,6 +22,7 @@ class InfoTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: Column(
@@ -28,10 +30,7 @@ class InfoTile extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                 ),
                 const SizedBox(height: 6),
                 SelectableText(
@@ -44,8 +43,10 @@ class InfoTile extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(width: 8),
           IconButton(
-            icon: const Icon(Icons.copy_rounded),
+            icon: const Icon(Icons.copy_rounded, size: 20),
+            splashRadius: 20,
             onPressed: onCopy,
           ),
         ],

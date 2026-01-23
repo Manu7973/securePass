@@ -23,12 +23,12 @@ class SearchHeaderDelegate extends SliverPersistentHeaderDelegate {
       bool overlapsContent) {
     return ValueListenableBuilder<bool>(
       valueListenable: showSearch,
-      builder: (_, visible, __) {
+      builder: (_, visible, _) {
         if (!visible) return const SizedBox.shrink();
 
         return Container(
           padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
-          color: const Color(0xFFF6F7FB),
+          color:  Colors.white,
           child: CupertinoSearchTextField(
             onChanged: onChanged,
           ),

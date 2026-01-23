@@ -9,11 +9,7 @@ import '../../features/feature_home/presentation/bloc/home_event.dart';
 
 class EditPasswordDialog extends StatefulWidget {
   final PasswordEntity item;
-
-  const EditPasswordDialog({
-    super.key,
-    required this.item,
-  });
+  const EditPasswordDialog({super.key, required this.item});
 
   @override
   State<EditPasswordDialog> createState() => _EditPasswordDialogState();
@@ -21,7 +17,6 @@ class EditPasswordDialog extends StatefulWidget {
 
 class _EditPasswordDialogState extends State<EditPasswordDialog> {
   final _formKey = GlobalKey<FormState>();
-
   late final TextEditingController siteCtrl;
   late final TextEditingController userCtrl;
   late final TextEditingController passCtrl;
@@ -47,8 +42,9 @@ class _EditPasswordDialogState extends State<EditPasswordDialog> {
   void _save() {
     if (!_formKey.currentState!.validate()) return;
 
-    final detectedCategory =
-    SiteCategoryClassifier.detect(siteCtrl.text.trim());
+    final detectedCategory = SiteCategoryClassifier.detect(
+      siteCtrl.text.trim(),
+    );
 
     context.read<PasswordBloc>().add(
       UpdatePassword(
@@ -56,8 +52,9 @@ class _EditPasswordDialogState extends State<EditPasswordDialog> {
           id: widget.item.id,
           site: siteCtrl.text.trim(),
           username: userCtrl.text.trim(),
-          password: passCtrl.text.trim(), category: detectedCategory,
-          isfav: false
+          password: passCtrl.text.trim(),
+          category: detectedCategory,
+          isfav: false,
         ),
       ),
     );
@@ -67,133 +64,140 @@ class _EditPasswordDialogState extends State<EditPasswordDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final bottomInset = mediaQuery.viewInsets.bottom;
+    final maxHeight = mediaQuery.size.height * 0.8; // 80% of screen height
+
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
       backgroundColor: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// 🔐 Header
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: CupertinoColors.activeBlue.withOpacity(.1),
-                      shape: BoxShape.circle,
+      child: SafeArea(
+        top: false,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: maxHeight,
+          ),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(bottom: bottomInset),
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 28, 24, 0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: CupertinoColors.activeBlue.withOpacity(.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.edit_outlined,
+                            color: CupertinoColors.activeBlue,
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        const Expanded(
+                          child: Text(
+                            'Edit Password',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
-                    child: const Icon(
-                      Icons.edit_outlined,
-                      color: CupertinoColors.activeBlue,
+                    const SizedBox(height: 6),
+                    Text(
+                      'Update your saved credentials',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                     ),
-                  ),
-                  const SizedBox(width: 14),
-                  const Text(
-                    'Edit Password',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
+                    const SizedBox(height: 28),
 
-              const SizedBox(height: 6),
-              Text(
-                'Update your saved credentials',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
+                    _buildField(
+                      controller: siteCtrl,
+                      label: 'Website / App',
+                      icon: Icons.public,
+                    ),
+                    const SizedBox(height: 18),
+                    _buildField(
+                      controller: userCtrl,
+                      label: 'Username',
+                      icon: Icons.person_outline,
+                    ),
+                    const SizedBox(height: 18),
+                    _buildField(
+                      controller: passCtrl,
+                      label: 'Password',
+                      icon: Icons.lock_outline,
+                      obscureText: _obscure,
+                      suffix: IconButton(
+                        icon: Icon(
+                          _obscure
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          color: Colors.grey[600],
+                        ),
+                        onPressed: () {
+                          setState(() => _obscure = !_obscure);
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 28),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey[700],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _save,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: CupertinoColors.activeBlue,
+                              elevation: 0,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                            child: const Text(
+                              'Save Changes',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-
-              const SizedBox(height: 28),
-
-              _buildField(
-                controller: siteCtrl,
-                label: 'Website / App',
-                icon: Icons.public,
-              ),
-
-              const SizedBox(height: 18),
-
-              _buildField(
-                controller: userCtrl,
-                label: 'Username',
-                icon: Icons.person_outline,
-              ),
-
-              const SizedBox(height: 18),
-
-              _buildField(
-                controller: passCtrl,
-                label: 'Password',
-                icon: Icons.lock_outline,
-                obscureText: _obscure,
-                suffix: IconButton(
-                  icon: Icon(
-                    _obscure
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                    color: Colors.grey[600],
-                  ),
-                  onPressed: () {
-                    setState(() => _obscure = !_obscure);
-                  },
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              /// 🎯 Actions
-              Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                      ),
-                      child: Text(
-                        'Cancel',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[700],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: _save,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: CupertinoColors.activeBlue,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      child: const Text(
-                        'Save Changes',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
         ),
       ),

@@ -9,7 +9,6 @@ import '../../features/feature_home/presentation/bloc/home_bloc.dart';
 import '../../features/feature_home/presentation/bloc/home_event.dart';
 import 'PasswordStrengthBar.dart';
 
-
 class AddPasswordDialog extends StatefulWidget {
   const AddPasswordDialog({super.key});
 
@@ -37,8 +36,7 @@ class _AddPasswordDialogState extends State<AddPasswordDialog> {
 
   // 🔐 Password generator (12–15 chars)
   String _generatePassword() {
-    const letters =
-        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numbers = '0123456789';
     const symbols = '!@#\$%^&*()-_=+[]{};:,.<>?';
 
@@ -46,17 +44,15 @@ class _AddPasswordDialogState extends State<AddPasswordDialog> {
     final length = 12 + rand.nextInt(4);
     final all = letters + numbers + symbols;
 
-    return List.generate(
-      length,
-          (_) => all[rand.nextInt(all.length)],
-    ).join();
+    return List.generate(length, (_) => all[rand.nextInt(all.length)]).join();
   }
 
   void _save() {
     if (!_formKey.currentState!.validate()) return;
 
-    final detectedCategory =
-    SiteCategoryClassifier.detect(siteCtrl.text.trim());
+    final detectedCategory = SiteCategoryClassifier.detect(
+      siteCtrl.text.trim(),
+    );
 
     context.read<PasswordBloc>().add(
       AddPassword(
@@ -66,7 +62,7 @@ class _AddPasswordDialogState extends State<AddPasswordDialog> {
           username: userCtrl.text.trim(),
           password: passCtrl.text.trim(),
           category: detectedCategory,
-          isfav: false
+          isfav: false,
         ),
       ),
     );
@@ -76,192 +72,196 @@ class _AddPasswordDialogState extends State<AddPasswordDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final maxHeight =
+        MediaQuery.of(context).size.height * 0.75; // max 75% of screen
+
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
       backgroundColor: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              /// Header
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.blueAccent.withOpacity(.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.lock_outline,
-                        color: Colors.blueAccent),
-                  ),
-                  const SizedBox(width: 14),
-                  const Text(
-                    'Add Password',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 28),
-
-              _buildTextField(
-                controller: siteCtrl,
-                label: 'Website / App',
-                icon: Icons.public,
-              ),
-
-              const SizedBox(height: 18),
-
-              _buildTextField(
-                controller: userCtrl,
-                label: 'Username',
-                icon: Icons.person_outline,
-              ),
-
-              const SizedBox(height: 18),
-
-              /// 🔐 Password Field with Eye Toggle
-              TextFormField(
-                controller: passCtrl,
-                obscureText: _obscurePassword,
-                onChanged: (value) {
-                  setState(() {
-                    _strength = value.isEmpty
-                        ? null
-                        : calculatePasswordStrength(value);
-                  });
-                },
-                validator: (v) =>
-                v == null || v
-                    .trim()
-                    .isEmpty
-                    ? 'Password is required'
-                    : null,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  prefixIcon: const Icon(Icons.lock_outline,
-                      color: Colors.blueAccent),
-                  suffixIcon: IconButton(
-                    splashRadius: 20,
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      color: Colors.grey.shade600,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 6),
-
-              /// ✨ Subtle Generate Button (Modern)
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton.icon(
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.blueAccent,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4),
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  onPressed: () {
-                    final generated = _generatePassword();
-                    setState(() {
-                      passCtrl.text = generated;
-                      _strength =
-                          calculatePasswordStrength(generated);
-                    });
-                  },
-                  icon: const Icon(Icons.auto_fix_high, size: 16),
-                  label: const Text(
-                    'Generate strong password',
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                ),
-              ),
-
-              /// Strength Bar
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 250),
-                child: _strength == null
-                    ? const SizedBox.shrink()
-                    : Padding(
-                  padding:
-                  const EdgeInsets.only(top: 10),
-                  child: PasswordStrengthBar(
-                    key: ValueKey(_strength),
-                    strength: _strength!,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              /// Actions
-              Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () =>
-                          Navigator.pop(context),
-                      child: const Text(
-                        'Cancel',
-                        style:
-                        TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: _save,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                        Colors.blueAccent,
-                        elevation: 0,
-                        padding:
-                        const EdgeInsets.symmetric(
-                            vertical: 14),
-                        shape:
-                        RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.circular(14),
+      child: SafeArea(
+        top: false,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxHeight),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(bottom: bottomInset),
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 28, 24, 0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// Header
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.blueAccent.withOpacity(.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.lock_outline,
+                            color: Colors.blueAccent,
+                          ),
                         ),
-                      ),
-                      child: const Text(
-                        'Save',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                        const SizedBox(width: 14),
+                        const Text(
+                          'Add Password',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 28),
+
+                    _buildTextField(
+                      controller: siteCtrl,
+                      label: 'Website / App',
+                      icon: Icons.public,
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    _buildTextField(
+                      controller: userCtrl,
+                      label: 'Username',
+                      icon: Icons.person_outline,
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    // Password Field
+                    TextFormField(
+                      controller: passCtrl,
+                      obscureText: _obscurePassword,
+                      onChanged: (value) {
+                        setState(() {
+                          _strength = value.isEmpty
+                              ? null
+                              : calculatePasswordStrength(value);
+                        });
+                      },
+                      validator: (v) => v == null || v.trim().isEmpty
+                          ? 'Password is required'
+                          : null,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        prefixIcon: const Icon(
+                          Icons.lock_outline,
+                          color: Colors.blueAccent,
+                        ),
+                        suffixIcon: IconButton(
+                          splashRadius: 20,
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                            color: Colors.grey.shade600,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: BorderSide.none,
                         ),
                       ),
                     ),
-                  ),
-                ],
+
+                    const SizedBox(height: 6),
+
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton.icon(
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.blueAccent,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        onPressed: () {
+                          final generated = _generatePassword();
+                          setState(() {
+                            passCtrl.text = generated;
+                            _strength = calculatePasswordStrength(generated);
+                          });
+                        },
+                        icon: const Icon(Icons.auto_fix_high, size: 16),
+                        label: const Text(
+                          'Generate strong password',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ),
+
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: _strength == null
+                          ? const SizedBox.shrink()
+                          : Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: PasswordStrengthBar(
+                                key: ValueKey(_strength),
+                                strength: _strength!,
+                              ),
+                            ),
+                    ),
+
+                    const SizedBox(height: 28),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text(
+                              'Cancel',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _save,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueAccent,
+                              elevation: 0,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                            child: const Text(
+                              'Save',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -276,15 +276,10 @@ class _AddPasswordDialogState extends State<AddPasswordDialog> {
     return TextFormField(
       controller: controller,
       validator: (v) =>
-      v == null || v
-          .trim()
-          .isEmpty
-          ? '$label is required'
-          : null,
+          v == null || v.trim().isEmpty ? '$label is required' : null,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon:
-        Icon(icon, color: Colors.blueAccent),
+        prefixIcon: Icon(icon, color: Colors.blueAccent),
         filled: true,
         fillColor: Colors.grey.shade100,
         border: OutlineInputBorder(

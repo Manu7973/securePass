@@ -177,29 +177,62 @@ class SettingsScreen extends StatelessWidget {
   Widget _biometricTile(BuildContext context, SettingsState state) {
     final isIOS = Platform.isIOS;
 
-    return SwitchListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-      title: Text(
-        isIOS ? 'Face ID Unlock' : 'Biometric Unlock',
-        style: const TextStyle(fontWeight: FontWeight.w500),
-      ),
-      subtitle: !isIOS
-          ? const Text(
-        'Use fingerprint or face authentication',
-        style: TextStyle(fontSize: 12),
-      )
-          : null,
-      secondary: Icon(
-        isIOS ? Icons.face : Icons.fingerprint,
-      ),
-      value: state.faceIdEnabled,
-      onChanged: (value) {
-        context.read<SettingsBloc>().add(ToggleFaceIdEvent(value));
+    return InkWell(
+      onTap: () {
+        context
+            .read<SettingsBloc>()
+            .add(ToggleFaceIdEvent(!state.faceIdEnabled));
       },
-      activeColor: isIOS ? CupertinoColors.activeBlue : Colors.blue,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Row(
+          children: [
+            Icon(
+              isIOS ? Icons.face : Icons.fingerprint,
+              color: Colors.black87,
+            ),
+
+            const SizedBox(width: 14),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    isIOS ? 'Face ID Unlock' : 'Biometric Unlock',
+                    style: const TextStyle(
+                      fontSize: 15.5,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  if (!isIOS)
+                    const SizedBox(height: 2),
+                  if (!isIOS)
+                    const Text(
+                      'Use fingerprint or face authentication',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                ],
+              ),
+            ),
+
+            Transform.scale(
+              scale: 0.85, // 👈 reduces height
+              child: CupertinoSwitch(
+                value: state.faceIdEnabled,
+                activeColor: CupertinoColors.activeBlue,
+                onChanged: (value) {
+                  context
+                      .read<SettingsBloc>()
+                      .add(ToggleFaceIdEvent(value));
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
-
 
   void _showDeleteDialog(BuildContext context) {
     showDialog(
@@ -453,191 +486,227 @@ class SettingsScreen extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(28),
             ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  /// 🔐 Header
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(.08),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.lock_reset_rounded,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      const Text(
-                        'Change Passcode',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
                   ),
-
-                  const SizedBox(height: 6),
-                  Text(
-                    'Update your app security',
-                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  _passcodeField(
-                    controller: oldCtrl,
-                    label: 'Current Passcode',
-                    obscure: obscureOld,
-                    onToggle: () => setState(() => obscureOld = !obscureOld),
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  _passcodeField(
-                    controller: newCtrl,
-                    label: 'New Passcode',
-                    obscure: obscureNew,
-                    onToggle: () => setState(() => obscureNew = !obscureNew),
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  _passcodeField(
-                    controller: confirmCtrl,
-                    label: 'Confirm New Passcode',
-                    obscure: obscureConfirm,
-                    onToggle: () =>
-                        setState(() => obscureConfirm = !obscureConfirm),
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  /// 🎯 Actions
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () => Navigator.pop(parentContext),
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                          ),
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            final oldPass = oldCtrl.text.trim();
-                            final newPass = newCtrl.text.trim();
-                            final confirmPass = confirmCtrl.text.trim();
-
-                            if (oldPass.isEmpty ||
-                                newPass.isEmpty ||
-                                confirmPass.isEmpty) {
-                              _showError(
-                                parentContext,
-                                'All fields are required',
-                              );
-                              return;
-                            }
-
-                            if (newPass.length < 4) {
-                              _showError(
-                                parentContext,
-                                'Passcode must be 4 digits',
-                              );
-                              return;
-                            }
-
-                            final storedPasscode = parentContext
-                                .read<SettingsBloc>()
-                                .state
-                                .passcode;
-
-                            if (oldPass != storedPasscode) {
-                              _showError(
-                                parentContext,
-                                'Old passcode is incorrect',
-                              );
-                              return;
-                            }
-
-                            if (oldPass == newPass) {
-                              _showError(
-                                parentContext,
-                                'New passcode must be different',
-                              );
-                              return;
-                            }
-
-                            if (newPass != confirmPass) {
-                              _showError(parentContext, 'Passcodes do not match');
-                              return;
-                            }
-
-                            parentContext.read<SettingsBloc>().add(
-                              ChangePasscodeEvent(newPass),
-                            );
-
-                            Navigator.pop(parentContext);
-
-                            ScaffoldMessenger.of(parentContext).showSnackBar(
-                              SnackBar(
-                                content: const Text(
-                                  'Passcode updated successfully',
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight:
+                      MediaQuery.of(context).size.height * 0.85,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// 🔐 Header
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(.08),
+                                  shape: BoxShape.circle,
                                 ),
-                                behavior: SnackBarBehavior.floating,
-                                backgroundColor: CupertinoColors.activeGreen,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                child: const Icon(
+                                  Icons.lock_reset_rounded,
+                                  color: Colors.black,
                                 ),
-                                duration: const Duration(seconds: 2),
                               ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            elevation: 0,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
+                              const SizedBox(width: 14),
+                              const Text(
+                                'Change Passcode',
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
-                          child: const Text(
-                            'Update',
+
+                          const SizedBox(height: 6),
+                          Text(
+                            'Update your app security',
                             style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              fontSize: 14,
+                              color: Colors.grey[600],
                             ),
                           ),
-                        ),
+
+                          const SizedBox(height: 28),
+
+                          _passcodeField(
+                            controller: oldCtrl,
+                            label: 'Current Passcode',
+                            obscure: obscureOld,
+                            onToggle: () =>
+                                setState(() => obscureOld = !obscureOld),
+                          ),
+
+                          const SizedBox(height: 18),
+
+                          _passcodeField(
+                            controller: newCtrl,
+                            label: 'New Passcode',
+                            obscure: obscureNew,
+                            onToggle: () =>
+                                setState(() => obscureNew = !obscureNew),
+                          ),
+
+                          const SizedBox(height: 18),
+
+                          _passcodeField(
+                            controller: confirmCtrl,
+                            label: 'Confirm New Passcode',
+                            obscure: obscureConfirm,
+                            onToggle: () => setState(
+                                    () => obscureConfirm = !obscureConfirm),
+                          ),
+
+                          const SizedBox(height: 32),
+
+                          /// 🎯 Actions
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(parentContext),
+                                  style: TextButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 14),
+                                  ),
+                                  child: Text(
+                                    'Cancel',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    final oldPass = oldCtrl.text.trim();
+                                    final newPass = newCtrl.text.trim();
+                                    final confirmPass =
+                                    confirmCtrl.text.trim();
+
+                                    if (oldPass.isEmpty ||
+                                        newPass.isEmpty ||
+                                        confirmPass.isEmpty) {
+                                      _showError(
+                                        parentContext,
+                                        'All fields are required',
+                                      );
+                                      return;
+                                    }
+
+                                    if (newPass.length < 4) {
+                                      _showError(
+                                        parentContext,
+                                        'Passcode must be 4 digits',
+                                      );
+                                      return;
+                                    }
+
+                                    final storedPasscode =
+                                        parentContext
+                                            .read<SettingsBloc>()
+                                            .state
+                                            .passcode;
+
+                                    if (oldPass != storedPasscode) {
+                                      _showError(
+                                        parentContext,
+                                        'Old passcode is incorrect',
+                                      );
+                                      return;
+                                    }
+
+                                    if (oldPass == newPass) {
+                                      _showError(
+                                        parentContext,
+                                        'New passcode must be different',
+                                      );
+                                      return;
+                                    }
+
+                                    if (newPass != confirmPass) {
+                                      _showError(parentContext,
+                                          'Passcodes do not match');
+                                      return;
+                                    }
+
+                                    parentContext
+                                        .read<SettingsBloc>()
+                                        .add(
+                                      ChangePasscodeEvent(newPass),
+                                    );
+
+                                    Navigator.pop(parentContext);
+
+                                    ScaffoldMessenger.of(parentContext)
+                                        .showSnackBar(
+                                      SnackBar(
+                                        content: const Text(
+                                          'Passcode updated successfully',
+                                        ),
+                                        behavior:
+                                        SnackBarBehavior.floating,
+                                        backgroundColor:
+                                        CupertinoColors.activeGreen,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(12),
+                                        ),
+                                        duration:
+                                        const Duration(seconds: 2),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black,
+                                    elevation: 0,
+                                    padding:
+                                    const EdgeInsets.symmetric(
+                                        vertical: 14),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(14),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'Update',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ],
-              ),
+                );
+              },
             ),
           );
         },
       ),
     );
   }
+
 
   Widget _passcodeField({
     required TextEditingController controller,
