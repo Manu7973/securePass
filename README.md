@@ -1,33 +1,89 @@
-# SecurePass
+# 🔐 SecurePass
 
-This app is to safely keep your passwords in your device storage without any internet interactions keeping passwords safe within your device.
+**SecurePass** is a lightweight, offline-first password manager that safely stores your passwords **locally on your device** — with **zero internet interaction**.
 
-<img width="450" height="700" alt="tour_1" src="https://github.com/user-attachments/assets/2940d15b-fb65-49e4-9973-332fc2f69401" />
+Your data never leaves your phone.  
+No cloud. No sync. No tracking. Just security.
 
-<img width="450" height="700" alt="tour_2" src="https://github.com/user-attachments/assets/9f5bf60e-1979-498b-82ac-144818511870" />
+---
 
+## ✨ Key Highlights
 
+- 🔒 **100% Offline** – No internet access required
+- 🛡️ **Local Device Storage** – Your passwords stay on your device
+- 🔐 **Passcode Protection** – Secure vault access
+- 👆 **Biometric Unlock** – Face ID / Fingerprint support
+- ⭐ **Favorite Passwords** – Quick access to important logins
+- 🔄 **Swipe Actions** – Swipe to edit or delete entries
+- 🧠 **Password Generator** – Create strong, secure passwords
+- 📊 **Password Strength Indicator**
 
+---
 
-<img width="450" height="700" alt="tour_3" src="https://github.com/user-attachments/assets/5247e19e-95c6-4baf-9d6f-8bebe54e711c" />
+## 📱 App Tour Preview
 
-<img width="450" height="700" alt="tour_4" src="https://github.com/user-attachments/assets/8a9babe6-9953-43cb-a7a9-9442bf2c4105" />
+Below are some screens from the in-app tour that demonstrate SecurePass features:
 
+<br/>
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2940d15b-fb65-49e4-9973-332fc2f69401" width="240" />
+  <img src="https://github.com/user-attachments/assets/9f5bf60e-1979-498b-82ac-144818511870" width="240" />
+  <img src="https://github.com/user-attachments/assets/5247e19e-95c6-4baf-9d6f-8bebe54e711c" width="240" />
+</p>
 
+<br/>
 
-<img width="450" height="700" alt="tour_5" src="https://github.com/user-attachments/assets/ee08cc1a-d65e-4546-9659-76b4c5b54761" />
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8a9babe6-9953-43cb-a7a9-9442bf2c4105" width="240" />
+  <img src="https://github.com/user-attachments/assets/ee08cc1a-d65e-4546-9659-76b4c5b54761" width="240" />
+  <img src="https://github.com/user-attachments/assets/3216039a-5099-4819-b638-085499b2b29c" width="240" />
+</p>
 
-<img width="450" height="700" alt="tour_6" src="https://github.com/user-attachments/assets/3216039a-5099-4819-b638-085499b2b29c" />
+---
 
+## 🔐 Security Philosophy
 
+SecurePass is built with **privacy-first principles**:
 
-## Getting Started
-This project is a starting point for a Flutter application.
-A few resources to get you started if this is your first Flutter project:
+- No network permissions
+- No cloud storage
+- No analytics
+- No ads
+- No background data usage
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+All passwords are stored **locally** and protected using your **passcode and biometric authentication**.
+
+---
+
+## 🛠️ Built With
+
+- **Flutter**
+- **Bloc (State Management)**
+- **Local Storage**
+- **Material & Cupertino Design**
+
+---
+
+## 🚀 Getting Started
+
+This project is a Flutter application.
+
+If this is your first Flutter project, here are some useful resources:
+
+- 📘 [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- 🍳 [Flutter Cookbook](https://docs.flutter.dev/cookbook)
+
+---
+
+## 📄 License
+
+This project is for learning and personal use.  
+(You can add a license later if needed.)
+
+---
+
+> 🔒 *Your passwords belong to you — and only you.*
 
 
 
