@@ -6,9 +6,15 @@ This app is to safely keep your passwords in your device storage without any int
 
 <img width="450" height="700" alt="tour_2" src="https://github.com/user-attachments/assets/9f5bf60e-1979-498b-82ac-144818511870" />
 
+
+
+
 <img width="450" height="700" alt="tour_3" src="https://github.com/user-attachments/assets/5247e19e-95c6-4baf-9d6f-8bebe54e711c" />
 
 <img width="450" height="700" alt="tour_4" src="https://github.com/user-attachments/assets/8a9babe6-9953-43cb-a7a9-9442bf2c4105" />
+
+
+
 
 <img width="450" height="700" alt="tour_5" src="https://github.com/user-attachments/assets/ee08cc1a-d65e-4546-9659-76b4c5b54761" />
 
