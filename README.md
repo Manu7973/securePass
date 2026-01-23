@@ -2,7 +2,7 @@
 
 This app is to safely keep your passwords in your device storage without any internet interactions keeping passwords safe within your device.
 
-<img width="1024" height="1536" alt="tour_1" src="https://github.com/user-attachments/assets/2940d15b-fb65-49e4-9973-332fc2f69401" />
+<img width="600" height="800" alt="tour_1" src="https://github.com/user-attachments/assets/2940d15b-fb65-49e4-9973-332fc2f69401" />
 <img width="1024" height="1536" alt="tour_2" src="https://github.com/user-attachments/assets/9f5bf60e-1979-498b-82ac-144818511870" />
 <img width="1024" height="1536" alt="tour_3" src="https://github.com/user-attachments/assets/5247e19e-95c6-4baf-9d6f-8bebe54e711c" />
 <img width="1024" height="1536" alt="tour_4" src="https://github.com/user-attachments/assets/8a9babe6-9953-43cb-a7a9-9442bf2c4105" />
