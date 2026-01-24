@@ -68,19 +68,6 @@ All passwords are stored **locally** and protected using your **passcode and bio
 ## 🚀 Getting Started
 
 This project is a Flutter application.
-
-If this is your first Flutter project, here are some useful resources:
-
-- 📘 [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- 🍳 [Flutter Cookbook](https://docs.flutter.dev/cookbook)
-
----
-
-## 📄 License
-
-This project is for learning and personal use.  
-(You can add a license later if needed.)
-
 ---
 
 > 🔒 *Your passwords belong to you — and only you.*
