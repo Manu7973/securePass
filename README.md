@@ -65,11 +65,6 @@ All passwords are stored **locally** and protected using your **passcode and bio
 
 ---
 
-## 🚀 Getting Started
-
-This project is a Flutter application.
----
-
 > 🔒 *Your passwords belong to you — and only you.*
 
 
