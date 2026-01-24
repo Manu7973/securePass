@@ -35,8 +35,8 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        versionCode = 6
-        versionName = "1.0.2"
+        versionCode = 11
+        versionName = "1.0.1"
     }
 
     signingConfigs {
