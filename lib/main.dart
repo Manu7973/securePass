@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'core/observers/AppLifecycleObserver.dart';
 import 'core/routes/appRoutes.dart';
 import 'core/storage/secureStorage/login_passcode_secure.dart';
 import 'core/storage/sharedPref/shared_Pref.dart';
@@ -112,7 +113,9 @@ void main() async {
 
         // BlocProvider.value(value: appLockBloc),
       ],
-      child: MyApp(hc: hasPasscode),
+      child: AppLifecycleGuard(child: MyApp(hc: hasPasscode)),
+
+      // child: MyApp(hc: hasPasscode),
     ),
   );
 }
@@ -125,6 +128,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: appNavigatorKey,
       theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
       initialRoute: hc ? AppRoutes.login : AppRoutes.register,
@@ -132,3 +136,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();

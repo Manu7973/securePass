@@ -9,26 +9,31 @@ import '../../../../core/widgits/EditPasswordDialog.dart';
 import '../../../../core/widgits/EmptyVaultView.dart';
 import '../../../../core/widgits/PasswordCard.dart';
 import '../../../../core/widgits/PasswordFilter.dart';
+import '../../../feature_privacyscreen/presentation/privacy_screen.dart';
 import '../../domain/FilterPasswords.dart';
 import '../../domain/PasswordEntity.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+  bool _showPrivacy = false;
 
   static final ValueNotifier<bool> _showSearch = ValueNotifier(false);
   static final ScrollController _controller = ScrollController();
   static bool _locked = false;
 
   @override
-  Widget build(BuildContext context) {
-    final bloc = context.read<PasswordBloc>();
-
-    if (bloc.state is PasswordInitial) {
-      bloc.add(LoadPasswords());
-    }
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     _controller.addListener(() {
       final direction = _controller.position.userScrollDirection;
@@ -45,17 +50,53 @@ class HomeScreen extends StatelessWidget {
         _locked = false;
       }
     });
+  }
 
-    return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      floatingActionButton: AnimatedFab(bloc: context.read<PasswordBloc>()),
-      body: CustomScrollView(
-        controller: _controller,
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      setState(() => _showPrivacy = true);
+    } else if (state == AppLifecycleState.resumed) {
+      setState(() => _showPrivacy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.read<PasswordBloc>();
+
+    if (bloc.state is PasswordInitial) {
+      bloc.add(LoadPasswords());
+    }
+
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: Colors.grey.shade100,
+          floatingActionButton: AnimatedFab(bloc: context.read<PasswordBloc>()),
+          body: CustomScrollView(
+            controller: _controller,
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            slivers: [
+              _appBar(context),
+              _animatedSearch(context),
+              _passwordList(),
+            ],
+          ),
         ),
-        slivers: [_appBar(context), _animatedSearch(context), _passwordList()],
-      ),
+
+        if (_showPrivacy) const PrivacyScreen(),
+      ],
     );
   }
 
@@ -116,36 +157,33 @@ class HomeScreen extends StatelessWidget {
             curve: Curves.easeOutCubic,
             child: visible
                 ? Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-              child: SizedBox(
-                height: 42, // compact height
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search by site name',
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      size: 20,
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    child: SizedBox(
+                      height: 42, // compact height
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search by site name',
+                          prefixIcon: const Icon(Icons.search, size: 20),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 12,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        style: const TextStyle(fontSize: 14),
+                        onChanged: (query) {
+                          context.read<PasswordBloc>().add(
+                            SearchPasswords(query),
+                          );
+                        },
+                      ),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 12,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  style: const TextStyle(fontSize: 14),
-                  onChanged: (query) {
-                    context.read<PasswordBloc>().add(
-                      SearchPasswords(query),
-                    );
-                  },
-                ),
-              ),
-            )
+                  )
                 : const SizedBox.shrink(),
           );
         },

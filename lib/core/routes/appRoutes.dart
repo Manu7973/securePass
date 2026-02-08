@@ -16,6 +16,7 @@ import '../../features/feature_login/presentation/bloc/login_bloc.dart';
 import '../../features/feature_login/presentation/bloc/login_event.dart';
 import '../../features/feature_login/presentation/screens/login_screen_android.dart';
 import '../../features/feature_login/presentation/screens/login_screen_ios.dart';
+import '../../features/feature_privacyscreen/presentation/privacy_screen.dart';
 import '../../features/feature_register/domain/SavePasscodeUseCase.dart';
 import '../../features/feature_register/presentation/bloc/register_bloc.dart';
 import '../../features/feature_register/presentation/screens/register_screen_ios.dart';
@@ -33,7 +34,7 @@ class AppRoutes {
   static const login = '/login';
   static const home = '/home';
   static const settings = '/settings';
-  static const testing = '/testing';
+  static const privacy = '/privacy';
 
   static Map<String, WidgetBuilder> routes = {
     register: (context) => BlocProvider(
@@ -73,5 +74,7 @@ class AppRoutes {
       )..add(LoadSettings()),
       child: const SettingsScreen(),
     ),
+
+    privacy: (context) => PrivacyScreen()
   };
 }
