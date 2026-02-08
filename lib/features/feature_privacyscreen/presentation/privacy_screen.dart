@@ -40,11 +40,12 @@ class PrivacyScreen extends StatelessWidget {
 
               const SizedBox(height: 14),
 
-              Text(
-                'Your privacy. Our priority. Our responsibility',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Text(
+                  'Your privacy. Our priority. Our responsibility',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                 ),
               ),
             ],
