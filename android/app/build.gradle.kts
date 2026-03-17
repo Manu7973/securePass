@@ -34,7 +34,7 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        versionCode = 15
+        versionCode = 16
         versionName = "1.1.0"
     }
 
